@@ -4,9 +4,9 @@
 
 Bhavna Gupta
 
-Jenna Ohira (A13590073)
+Jenna Ohira
 
-Tina Ahamad (A13869848)
+Tina Ahamad
 
 Sarah Hall
 

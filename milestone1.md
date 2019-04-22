@@ -19,9 +19,14 @@ Another possible app idea we have is a book recommendation app. This app would t
 
 ## Storyboard for Idea #1
 	
-Surfer lives far away from the beach and wants to see if it's a good time to go surf.
+### Surfer lives far away from the beach and wants to see if it's a good time to go surf.
+![SB2](https://user-images.githubusercontent.com/20780820/56484520-bf552600-6484-11e9-95cc-f494bb1d8889.JPG)
+
+
+### Surfer is at a beach where the waves are bad so they go on their app to see if a nearby beach is better.
+![SB1](https://user-images.githubusercontent.com/20780820/56484463-97fe5900-6484-11e9-8931-95fc9f024ab7.jpeg)
 	
-Surfer is at a beach where the waves are bad so they go on their app to see if a nearby beach is better.
 	
 ## Prototypes for Idea #1
-
+![IMG_3914](https://user-images.githubusercontent.com/20780820/56484521-c1b78000-6484-11e9-85b1-4ac6e6844c4c.JPG)
+![IMG_3913](https://user-images.githubusercontent.com/20780820/56484523-c419da00-6484-11e9-823e-2666a36ad7bd.JPG)

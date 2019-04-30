@@ -1,0 +1,16 @@
+body {
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 50px;
+}
+
+#ratings {
+  text-align: center;
+}
+h3 {
+  text-align: center;
+}
+
+#menu {
+  text-align: center;
+}

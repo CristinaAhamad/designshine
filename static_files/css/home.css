@@ -1,0 +1,19 @@
+body {
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 50px;
+}
+
+#title {
+  text-align: center;
+}
+#list {
+  margin-left: 50px;
+}
+.weatherLink {
+  margin-left: 25px;
+}
+
+#menu {
+  text-align: center;
+}

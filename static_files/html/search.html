@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
+        authDomain: "designshine-surfapp.firebaseapp.com",
+        databaseURL: "https://designshine-surfapp.firebaseio.com",
+        projectId: "designshine-surfapp",
+        storageBucket: "designshine-surfapp.appspot.com",
+        messagingSenderId: "257277932654"
+      };
+      firebase.initializeApp(config);
+    </script>
     <script src="../jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
 
     $(document).ready(() => {
-        $.ajax({
+      /*accessing Firebase*/
+      const database = firebase.database();
+      //access data
+      database.ref('beaches').once('value', (snapshot) => {
+        const data = snapshot.val();
+        console.log('You received some data!', data);
+        var html = '';
+        //access all keys in database
+        var keys = Object.keys(data);
+        //create entry for each key
+        for(var i in keys) {
+          html += '<p><div class="beachItem">' + keys[i] + '</div>' + '<a href="weatherdata.html">see wave conditions</a></p>';
+        }
+        $('#searchOptions').append(html);
+      });
+
+    /*TODO: SEARCH IN PROGESS*/
+    $('#searchBar').on("keyup", function() {
+      var searchEntry = $(this).val().toLowerCase();
+      $(".beachItem").each(function() {
+          var beachEntry = $(this).text().toLowerCase();
+          $(this).closest('.beachItem')[ s.indexOf(searchEntry) !== -1 ? 'show' : 'hide' ]();
+      });
+    });
+        /*$.ajax({
           url: '../beaches/',
           type: 'GET',
           dataType : 'json',
@@ -17,11 +54,7 @@
             }
             $('#searchOptions').append(html);
           },
-        });
-
-      $(document).ajaxError(() => {
-        $('#searchOptions').html('Error: unknown ajaxError!');
-      });
+        });*/
     });
     </script>
   </head>

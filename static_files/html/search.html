@@ -5,20 +5,39 @@
     <script type="text/javascript">
 
     $(document).ready(() => {
-        $.ajax({
-          url: '../beaches/',
-          type: 'GET',
-          dataType : 'json',
-          success: (data) => {
-            console.log('You received some data!', data);
+      $.ajax({
+        url: '../beaches/',
+        type: 'GET',
+        dataType : 'json',
+        success: (data) => {
+          console.log('You received some data!', data);
 
+          var html = '';
+          html += '<h4>Beaches near you:</h4>';
+          for(var key in data) {
+            html += '<p><div>' + data[key] + '</div>' + '<a href="weatherdata.html">see wave conditions</a></p>';
+          }
+          $('#searchOptions').append(html);
+        },
+      });
+      
+      $('#goButton').click(() => {
+        $.ajax({
+          url: '../beaches/' + $('#searchBox').val(),
+          type: 'GET',
+          dataType: 'json',
+          success: (data) => {
+            console.log('here: ', data);
             var html = '';
-            for(var key in data) {
-              html += '<p><div>' + data[key] + '</div>' + '<a href="weatherdata.html">see wave conditions</a></p>';
+            if(data.beachToLookup == 'NA') {
+              html = 'Not Found';
+            } else {
+              html += data.beachToLookup + '<br><a href="weatherdata.html">see wave conditions</a></p>';
             }
-            $('#searchOptions').append(html);
-          },
+            $('#searchOptions').html(html);
+          }
         });
+      });
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');
@@ -29,10 +48,11 @@
 
   <body>
     <div id="searchBar">
-      <input type="text" placeholder="Search...">
+      <input id="searchBox" type="text" placeholder="Search...">
+      <button id="goButton"> GO </button>
     </div>
     <br>
-    <h4>Beaches near you:</h4>
+    
     <div id="searchOptions">
       <!--<p> Black's Beach</p>
       <a href="weatherdata.html">see wave conditions</a>
@@ -42,7 +62,7 @@
 
     <div id="menu">
       <br>
-      <button id="searchButton"> Search </button>
+      <button id="searchButton"> <a href="search.html"> Search </button>
       <button id="homeButton"> <a href="home.html"> Home </a> </button>
       <button id="profileButton"> <a href="profile.html"> Profile </a> </button>
     </div>

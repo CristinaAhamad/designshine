@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="../css/search.css">
     <script src="../jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
 
@@ -20,7 +21,7 @@
           $('#searchOptions').append(html);
         },
       });
-      
+
       $('#goButton').click(() => {
         $.ajax({
           url: '../beaches/' + $('#searchBox').val(),
@@ -56,7 +57,7 @@
       <button id="goButton"> GO </button>
     </div>
     <br>
-    
+
     <div id="searchOptions">
       <!--<p> Black's Beach</p>
       <a href="weatherdata.html">see wave conditions</a>
@@ -64,12 +65,14 @@
       <a href="weatherdata.html">see wave conditions</a>-->
     </div>
 
-    <div id="menu">
-      <br>
-      <button id="searchButton"> <a href="search.html"> Search </button>
-      <button id="homeButton"> <a href="home.html"> Home </a> </button>
-      <button id="profileButton"> <a href="profile.html"> Profile </a> </button>
-    </div>
+    <footer>
+      <div id="menu">
+        <br>
+        <button id="searchButton"> <a href="search.html"> Search </a> </button>
+        <button id="homeButton"> <a href="home.html"> Home </a> </button>
+        <button id="profileButton"> <a href="profile.html"> Profile </a> </button>
+      </div>
+    </footer>
 
   </body>
 </html>

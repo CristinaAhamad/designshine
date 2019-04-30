@@ -1,0 +1,31 @@
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+#searchBar {
+  text-align: center;
+}
+
+#menu {
+  text-align: center;
+}
+
+#searchOptions{
+  background-color: #e3f2fd;
+  flex: 1;
+  padding: 20px;
+  font: Futura, Helvetica;
+  text-align: center;
+  line-height: 20px;
+  font-size: 16px;
+}
+
+footer {
+  padding: 20px;
+}

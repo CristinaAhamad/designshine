@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+
+    $(document).ready(() => {
+      $('#searchButton').click(() => {
+        $.ajax({
+          url: 'beaches',
+          type: 'GET',
+          dataType : 'json',
+          success: (data) => {
+            console.log('You received some data!', data);
+            $('#searchOptions').html("Beaches Near You:" + data)
+          },
+        });
+      });
+
+      $(document).ajaxError(() => {
+        $('#searchOptions').html('Error: unknown ajaxError!');
+      });
+    });
+    </script>
   </head>
 
   <body>
@@ -9,10 +30,12 @@
     </div>
     <br>
     <h4>Beaches near you:</h4>
-    <p> Black's Beach</p>
-    <a href="weatherdata.html">see wave conditions</a>
-    <p> La Jolla Shores</p>
-    <a href="weatherdata.html">see wave conditions</a>
+    <div id="searchOptions">
+      <!--<p> Black's Beach</p>
+      <a href="weatherdata.html">see wave conditions</a>
+      <p> La Jolla Shores</p>
+      <a href="weatherdata.html">see wave conditions</a>-->
+    </div>
 
     <div id="menu">
       <br>

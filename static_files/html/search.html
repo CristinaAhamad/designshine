@@ -5,18 +5,16 @@
     <script type="text/javascript">
 
     $(document).ready(() => {
-      $('#searchButton').click(() => {
-        console.log("click");
         $.ajax({
           url: '../beaches/',
           type: 'GET',
           dataType : 'json',
           success: (data) => {
             console.log('You received some data!', data);
-            $('#searchOptions').html('Beaches Near You:' + data);
+            $('#searchOptions').html(data);
           },
         });
-      });
+
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');

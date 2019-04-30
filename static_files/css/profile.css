@@ -1,0 +1,15 @@
+body {
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 50px;
+}
+h1 {
+  text-align: center;
+}
+#ratings {
+  text-align: center;
+}
+
+#menu {
+  text-align: center;
+}

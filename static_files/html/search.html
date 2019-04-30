@@ -32,7 +32,11 @@
             if(data.beachToLookup == 'NA') {
               html = 'Not Found';
             } else {
-              html += data.beachToLookup + '<br><a href="weatherdata.html">see wave conditions</a></p>';
+              html += '<h4>' + data.beachToLookup+ '</h4>';
+              html += 'Swell: ' + data.val.swell;
+              html += '<br> Temp: ' + data.val.temp;
+              html += '<br> Wind: ' + data.val.wind;
+              html += '<br> Tide: ' + data.val.tide;
             }
             $('#searchOptions').html(html);
           }

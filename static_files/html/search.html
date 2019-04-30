@@ -5,18 +5,19 @@
     <script type="text/javascript">
 
     $(document).ready(() => {
-      $('#searchButton').click(() => {
-        console.log("click");
         $.ajax({
           url: '../beaches/',
           type: 'GET',
           dataType : 'json',
           success: (data) => {
             console.log('You received some data!', data);
-            $('#searchOptions').html('Beaches Near You:' + data);
+            var html = '';
+            for(var key in data) {
+              html += '<p><div>' + data[key] + '</div>' + '<a href="weatherdata.html">see wave conditions</a></p>';
+            }
+            $('#searchOptions').append(html);
           },
         });
-      });
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');

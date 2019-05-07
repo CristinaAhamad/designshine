@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="css/index.css"
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
   </head>
 
   <body>
-    <h1>Welcome</h1>
-  </body>
 
-  <body>
-    <h2>Log In</h2>
-    <input id="usernameBox" type="text" placeholder="Username" size="20"/>
-    <input id="passwordBox" type="text" placeholder="Password" size="20"/>
-    <button id="enterButton" onclick="window.location.href='html/home.html';" >Login</button>
-  </body>
+    <!--DIV for beach photo (left)-->
+    <div class="loginphoto">
+      <img src="loginphoto.jpg" alt="Person on Surfboard">
+    </div>
+    <!--DIV for login fields (right)-->
+    <div class="logininfo">
+      <h1>Welcome!</h1>
 
-<br>
-  <body>
-    <h2>Create New Account </h2>
-    <input id="emailBox" type="text" placeholder="Email" size="20"/>
-    <input id="newUsernameBox" type="text" placeholder="Username" size="20"/>
-    <input id="newPasswordBox" type="text" placeholder="Password" size="20"/>
-    <button id="createButton" onclick="window.location.href='html/home.html';">Create</button>
+      <br />
+
+      <h2>Log In</h2>
+      <input id="usernameBox" type="text" placeholder="Username" size="20"/><br>
+      <input id="passwordBox" type="text" placeholder="Password" size="20"/><br>
+      <button id="enterButton" onclick="window.location.href='html/home.html';" >Login</button>
+
+
+      <br><br>
+
+      <h2>Create New Account </h2>
+      <input id="emailBox" type="text" placeholder="Email" size="20"/> <br>
+      <input id="newUsernameBox" type="text" placeholder="Username" size="20"/> <br>
+      <input id="newPasswordBox" type="text" placeholder="Password" size="20"/> <br>
+      <button id="createButton" onclick="window.location.href='html/home.html';">Create</button>
+    </div>
+
   </body>
 </html>

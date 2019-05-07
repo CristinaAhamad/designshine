@@ -25,16 +25,6 @@ app.get('/beaches/:name', (req, res) => {
 });
 
 
-//const request = new XMLHttpRequest();
-//http://magicseaweed.com/api/797022276644-6ludpo55lhr67659aqrvu678sftkevis.apps.googleusercontent.com/forecast/?spot_id=10
-//request.open('GET', 'http://api.spitcast.com/surf-report/county/san-diego/');
-//request.responseType = 'json';
-//request.send();
-
-//request.onload = function () {
-	
-//}
-
 app.listen(3000, () => {
 	console.log('Server started at http://localhost:3000/');
 });

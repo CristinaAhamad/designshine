@@ -3,6 +3,7 @@
   <head>
     <link rel="stylesheet" type="text/css" href="../css/home.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../markerclusterer.js"></script>
   </head>
 
   <body>
@@ -82,12 +83,14 @@
 
           //adds markers for all beaches
           var marker, i;
+          var markersArray = [];
           var label = new google.maps.InfoWindow;
           for (i = 0; i < beaches.length; i++) {
             marker = new google.maps.Marker({
               position: new google.maps.LatLng(beaches[i][1], beaches[i][2]),
               map: map
             });
+            markersArray.push(marker);
 
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
               return function() {
@@ -101,6 +104,10 @@
               }
             }) (marker, i));
           }
+
+          //adds marker clusters for beaches
+          var cluster = new MarkerClusterer(map, markersArray);
+
       }
 
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -117,6 +124,8 @@
 
     <!-- beach locations api -->
     <script src="https://api.coastal.ca.gov/access/v1/locations" type="text/javascript"></script>
+
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
     <!--a href="http://magicseaweed.com"><img src="https://im-1-uk.msw.ms/msw_powered_by.png"></a-->
 

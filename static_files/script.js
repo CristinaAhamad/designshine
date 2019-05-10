@@ -8,15 +8,25 @@ request.responseType = 'text';
 
 request.onload = function () {
 	var data = JSON.parse(this.responseText);
+
+	const h1 = document.createElement('h1');
+	h1.textContent = "Beaches Near You:";
+	h1.setAttribute("style", "line-height: 10px; font-size: 30px");
+	app.appendChild(h1);
+
 	data.forEach(beach => {
 		console.log("spot:", beach.spot_name);
+
 		const card = document.createElement('div');
 		card.setAttribute('class', 'card');
 
-		const h1 = document.createElement('h1');
-		h1.textContent = beach.spot_name;
+		const link = document.createElement('a');
+		var linkText = document.createTextNode(beach.spot_name);
+		link.appendChild(linkText);
+		link.setAttribute("style", "line-height: 40px; font-size: 20px");
+		link.href = "weatherdata.html";
 
-		card.appendChild(h1);
+		card.appendChild(link);
 		app.appendChild(card);
 	})
 }

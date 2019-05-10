@@ -5,7 +5,7 @@
   </head>
 
   <body>
-    <div id="ratings">
+    <!--div id="ratings">
       <h1>Black's Beach</h1>
       <button id="favorite"> Favorite </button>
       <p> Current surf condition: Great </p>
@@ -20,10 +20,24 @@
       <p> Swell direction: SE </p>
       <p> Minimum breaking height: 3.4 ft</p>
       <p> Maximum breaking height: 5 ft</p>
-      <!-- <p> Tide: </p> -->
+      <p> Tide: </p>
       <p> Wind speed: 6 mph</p>
       <p> Wind direction: SE </p>
+    </div>-->
+    <script id="display-template" type="text/x-handlebars-template">
+    <div class="beach-data" id="display-data">
+      <h1>{{beach}}</h1>
+      <div class ="data">
+        <p> Temperature: 	{{temp}} &#8457;</p>
+        <p> Swell direction: {{swellDirection}} </p>
+        <!--<p> Minimum breaking height: {{minBH}} ft</p>
+        <p> Maximum breaking height: {{maxBH}} ft</p> -->
+        <p> Tide: {{tide}} </p>
+        <p> Wind speed: {{windSpeed}} mph</p>
+        <p> Wind direction: {{windDirection}} </p>
+      </div>
     </div>
+  </script>
 
     <br>
     <h3> Reviews </h3>

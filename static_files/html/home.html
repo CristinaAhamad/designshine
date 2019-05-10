@@ -63,10 +63,12 @@
       var beaches = [];
       for (i = 0; i < beachesAPI.length; i++) {
         var beach = [];
-        beach.push(beachesAPI[i]['NameMobileWeb']);
-        beach.push(beachesAPI[i]['LATITUDE']);
-        beach.push(beachesAPI[i]['LONGITUDE']);
-        beaches.push(beach);
+        if(beachesAPI[i]['SNDY_BEACH']==='Yes') {
+          beach.push(beachesAPI[i]['NameMobileWeb']);
+          beach.push(beachesAPI[i]['LATITUDE']);
+          beach.push(beachesAPI[i]['LONGITUDE']);
+          beaches.push(beach);
+        }
       }
 
       //marks user's current location

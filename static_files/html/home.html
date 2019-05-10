@@ -2,11 +2,12 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="../css/home.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   </head>
 
   <body>
     <h1 id="title"> Local Beaches </h1>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d107235.76927336497!2d-117.3100282777099!3d32.868602773114915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80dbd0764fcc0ecd%3A0xfce51ef45c1d3094!2sLa+Jolla%2C+San+Diego%2C+CA!5e0!3m2!1sen!2sus!4v1556649889698!5m2!1sen!2sus" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+    <div id="map" style="height: 400px; width: 100%;"> </div>
     <p> Beaches in La Jolla: </p>
     <div id="list">
       <p class="beachName"> Black's Beach</p>
@@ -21,6 +22,102 @@
       <button id="homeButton"> <a href="home.html"> Home </a> </button>
       <button id="profileButton"> <a href="profile.html"> Profile </a> </button>
     </div>
+
+    <script>
+      // use coastal api to get all beaches in California
+      var beachesAPI;
+      $.ajax({
+        url: 'https://api.coastal.ca.gov/access/v1/locations',
+        type: 'GET',
+        async: false,   //deprecated but at least it works now??
+        success: (data) => {
+          beachesAPI = data;
+          console.log('successfully got data');
+        }
+      })
+      var beaches = [];
+      for (i = 0; i < beachesAPI.length; i++) {
+        var beach = [];
+        beach.push(beachesAPI[i]['NameMobileWeb']);
+        beach.push(beachesAPI[i]['LATITUDE']);
+        beach.push(beachesAPI[i]['LONGITUDE']);
+        beaches.push(beach);
+      }
+
+      //marks user's current location
+      var map, infoWindow;
+
+      function initMap() {
+        //default centers map at mavericks beach in half moon bay
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 37.495799, lng: -122.496730},
+          zoom: 6
+        });
+        infoWindow = new google.maps.InfoWindow;
+
+        //marks user's geolocation
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var locationMarker = new google.maps.Marker({
+              position: pos,
+              map: map,
+              icon: {url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+            });
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Current location');
+            infoWindow.open(map, locationMarker);
+            map.setCenter(pos);
+            map.setZoom(12);
+          }, function() {
+              handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+          }
+
+          //adds markers for all beaches
+          var marker, i;
+          var label = new google.maps.InfoWindow;
+          for (i = 0; i < beaches.length; i++) {
+            marker = new google.maps.Marker({
+              position: new google.maps.LatLng(beaches[i][1], beaches[i][2]),
+              map: map
+            });
+
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+              return function() {
+                var html = '';
+                html += '<div class="infowindow-content">';
+                html += beaches[i][0];
+                html += '</br> <a href="weatherdata.html">'+ 'View weather conditions' +'</a>';
+                html += '</div>';
+                label.setContent(html);
+                label.open(map, marker);
+              }
+            }) (marker, i));
+          }
+      }
+
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                                    'Error: The Geolocation service failed.' :
+                                    'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+      }
+
+    </script>
+    <!-- geolocation key -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSgPgFsM2dB9058bOAmGw_tZmheEM0qjc&callback=initMap"></script>
+
+    <!-- beach locations api -->
+    <script src="https://api.coastal.ca.gov/access/v1/locations" type="text/javascript"></script>
+
     <!--a href="http://magicseaweed.com"><img src="https://im-1-uk.msw.ms/msw_powered_by.png"></a-->
 
   </body>

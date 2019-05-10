@@ -1,4 +1,4 @@
-const app = document.getElementById('searchOptions');
+const search = document.getElementById('searchOptions');
 //let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 let request = new XMLHttpRequest();
 
@@ -12,14 +12,14 @@ request.onload = function () {
 	const h1 = document.createElement('h1');
 	h1.textContent = "Beaches Near You:";
 	h1.setAttribute("style", "line-height: 10px; font-size: 30px");
-	app.appendChild(h1);
+	search.appendChild(h1);
 
 	data.forEach(beach => {
 		console.log("spot:", beach.spot_name);
 
+		//Beach names for search
 		const card = document.createElement('div');
 		card.setAttribute('class', 'card');
-
 		const link = document.createElement('a');
 		var linkText = document.createTextNode(beach.spot_name);
 		link.appendChild(linkText);
@@ -27,7 +27,7 @@ request.onload = function () {
 		link.href = "weatherdata.html";
 
 		card.appendChild(link);
-		app.appendChild(card);
+		search.appendChild(card);
 	})
 }
 request.send();

@@ -81,5 +81,10 @@ button, input, h4, a, p {
 }
 
 footer {
-  padding: 20px;
+  padding: 10px;
+  padding-top: 5px;
+  background-color: #2172A2;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }

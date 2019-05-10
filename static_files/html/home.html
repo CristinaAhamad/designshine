@@ -9,12 +9,35 @@
   <body>
     <h1 id="title"> Local Beaches </h1>
     <div id="map" style="height: 400px; width: 100%;"> </div>
-    <p> Beaches in La Jolla: </p>
-    <div id="list">
-      <p class="beachName"> Black's Beach</p>
-      <a class="weatherLink" href="weatherdata.html"> See wave conditions</a>
-      <p class="beachName"> La Jolla Shores</p>
-      <a class="weatherLink" href="weatherdata.html"> See wave conditions</a>
+    <h2> Beaches in La Jolla: </h2>
+    <div id="nearbyBeaches">
+      <script>
+      const home = document.getElementById('nearbyBeaches');
+      let request = new XMLHttpRequest();
+      request.open('GET', 'http://api.spitcast.com/api/county/spots/san-diego/', true);
+      request.responseType = 'text';
+
+      request.onload = function () {
+        var data = JSON.parse(this.responseText);
+
+        data.forEach(beach => {
+          console.log("spot:", beach.spot_name);
+
+          //Beach names for search
+          const card = document.createElement('div');
+          card.setAttribute('class', 'card');
+          const link = document.createElement('a');
+          var linkText = document.createTextNode(beach.spot_name);
+          link.appendChild(linkText);
+          link.setAttribute("style", "line-height: 40px; font-size: 20px");
+          link.href = "weatherdata.html";
+
+          card.appendChild(link);
+          home.appendChild(card);
+        })
+      }
+      request.send();
+      </script>
     </div>
 
     <div id="menu">
@@ -25,6 +48,7 @@
     </div>
 
     <script>
+
       // use coastal api to get all beaches in California
       var beachesAPI;
       $.ajax({

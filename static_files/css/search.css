@@ -74,7 +74,6 @@ button, input, h4, a, p {
   text-align: center;
 }
 
-
 #searchOptions p, #searchOptions h4{
   line-height: 22px;
   font-size: 20px;
@@ -87,4 +86,10 @@ footer {
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+.linkButton {
+  padding: 0;
+  border: none;
+  background: none;
 }

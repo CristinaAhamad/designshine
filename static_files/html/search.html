@@ -7,23 +7,7 @@
     <script type="text/javascript">
 
     $(document).ready(() => {
-      $.ajax({
-        url: '../beaches/',
-        type: 'GET',
-        dataType : 'json',
-        success: (data) => {
-          console.log('You received some data!', data);
-
-          //var html = '';
-          //html += '<h4>Beaches Near You:</h4>';
-          //for(var key in data) {
-            //html += '<p>' + data[key] + '<br />' + '<a href="weatherdata.html">See Wave Conditions</a></p>';
-          //}
-          //$('#searchOptions').append(html);
-        },
-      });
-
-      $('#goButton').click(() => {
+      /*$('#goButton').click(() => {
         $.ajax({
           url: '../beaches/' + $('#searchBox').val(),
           type: 'GET',
@@ -35,15 +19,36 @@
               html = '<p>Not Found</p>';
             } else {
               html += '<h4>' + data.beachToLookup + '</h4>';
-              html += '<p>Swell: ' + data.val.swell; + '</p>';
-              html += '<br><p> Temp: ' + data.val.temp; + '</p>';
-              html += '<br><p> Wind: ' + data.val.wind + '</p>';
-              html += '<p> Tide: ' + data.val.tide + '</p>';
+              //html += '<p>Swell: ' + data.val.swell; + '</p>';
+              //html += '<br><p> Temp: ' + data.val.temp; + '</p>';
+              //html += '<br><p> Wind: ' + data.val.wind + '</p>';
+              //html += '<p> Tide: ' + data.val.tide + '</p>';
             }
             $('#searchOptions').html(html);
           }
         });
+      });*/
+     var search = $("#searchBox");
+     var items  = $(".card");
+     $("#searchBox").on("keyup", function() {
+      console.log("searching...")
+      var g = $(this).val().toLowerCase();
+      $(".card").each(function() {
+          var s = $(this).text().toLowerCase();
+          $(this).closest('.card')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
       });
+    });
+
+    //append beach data
+    $(".linkButton").on('click', function(event){
+          console.log("clicked");
+          var beachData = document.createElement('p');
+          var linkText = document.createTextNode("swell: 5, tide: 11, wind: 4mph");
+      		beachData.appendChild(linkText);
+          var beachButton = document.getElementById(this.id);
+          beachButton.appendChild(beachData);
+    });
+    //TODO: remove data once anything else is clicked
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');

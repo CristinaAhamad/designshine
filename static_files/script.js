@@ -20,10 +20,12 @@ request.onload = function () {
 		//Beach names for search
 		const card = document.createElement('div');
 		card.setAttribute('class', 'card');
-		const link = document.createElement('a');
+		const link = document.createElement('button');
 		var linkText = document.createTextNode(beach.spot_name);
 		link.appendChild(linkText);
-		link.setAttribute("style", "line-height: 40px; font-size: 20px");
+		link.setAttribute('class', 'linkButton');
+		link.setAttribute('id', beach.spot_name);
+		link.setAttribute("style", "line-height: 40px; font-size: 20px;");
 		link.href = "weatherdata.html";
 
 		card.appendChild(link);

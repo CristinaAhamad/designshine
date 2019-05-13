@@ -24,11 +24,19 @@
 }
 
 body {
-  max-width: 600px;
-  margin: auto;
   margin-bottom: 50px;
   background-color: #f7f9fc;
+  margin: 0;
 }
+
+#page-container{
+  width: 100%;
+}
+.content-wrap {
+  text-align: center;
+  width: 100%;
+}
+
 h1, button, h3, p {
   font-family: 'Montserrat', sans-serif;
 }
@@ -42,4 +50,13 @@ h1 {
 
 #menu {
   text-align: center;
+}
+
+footer {
+  padding: 10px;
+  padding-top: 5px;
+  background-color: #2172A2;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }

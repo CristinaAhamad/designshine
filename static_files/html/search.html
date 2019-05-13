@@ -31,7 +31,7 @@
      var search = $("#searchBox");
      var items  = $(".card");
      $("#searchBox").on("keyup", function() {
-      console.log("searching...")
+      console.log("searching...");
       var g = $(this).val().toLowerCase();
       $(".card").each(function() {
           var s = $(this).text().toLowerCase();
@@ -41,12 +41,19 @@
 
     //append beach data
     $(".linkButton").on('click', function(event){
-          console.log("clicked");
-          var beachData = document.createElement('p');
-          var linkText = document.createTextNode("swell: 5, tide: 11, wind: 4mph");
-      		beachData.appendChild(linkText);
-          var beachButton = document.getElementById(this.id);
-          beachButton.appendChild(beachData);
+      console.log("clicked");
+      const linkToPage = document.createElement('a');
+      var linkText = document.createTextNode("click here for more details");
+  		linkToPage.appendChild(linkText);
+      linkToPage.href = 'weatherdata.html';
+
+      var beachData = document.createElement('p');
+      var dataText = document.createTextNode("swell: 5, tide: 11, wind: 4mph");
+      beachData.appendChild(dataText);
+      
+      var beachButton = document.getElementById(this.id);
+      beachButton.appendChild(beachData);
+      beachButton.appendChild(linkToPage);
     });
     //TODO: remove data once anything else is clicked
 

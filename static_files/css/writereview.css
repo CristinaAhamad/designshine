@@ -40,3 +40,12 @@ input.break {
     word-break: break-all;
     height: 80px;
 }
+
+footer {
+  padding: 10px;
+  padding-top: 5px;
+  background-color: #2172A2;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

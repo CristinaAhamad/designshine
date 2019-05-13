@@ -26,7 +26,7 @@ request.onload = function () {
 		link.setAttribute('class', 'linkButton');
 		link.setAttribute('id', beach.spot_name);
 		link.setAttribute("style", "line-height: 40px; font-size: 20px;");
-		link.href = "weatherdata.html";
+		//link.href = "weatherdata.html";
 
 		card.appendChild(link);
 		search.appendChild(card);

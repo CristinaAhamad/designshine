@@ -5,7 +5,6 @@
     <script src="../jquery-3.3.1.min.js"></script>
 
     <script type="text/javascript">
-
     $(document).ready(() => {
       //TODO:get API data to print as preview
       /*let request = new XMLHttpRequest();
@@ -55,10 +54,10 @@
       console.log("clicked");
 
       var beachData = document.createElement('p');
-      var dataText = document.createTextNode("Current conditions: Fair" /*+ data[0].shape_full*/);
+      var dataText = document.createTextNode("Current conditions: Fair");
       beachData.appendChild(dataText);
 
-      const linkToPage = document.createElement('a');
+      var linkToPage = document.createElement('a');
       var linkText = document.createTextNode("click here for more details");
     	linkToPage.appendChild(linkText);
       linkToPage.href = 'weatherdata.html';
@@ -72,6 +71,7 @@
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');
       });
+
     });
     </script>
   </head>

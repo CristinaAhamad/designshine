@@ -7,6 +7,17 @@
     <script type="text/javascript">
 
     $(document).ready(() => {
+      //TODO:get API data to print as preview
+      /*let request = new XMLHttpRequest();
+
+      request.open('GET', 'http://api.spitcast.com/api/spot/forecast/238/', true);
+      request.responseType = 'text';
+
+      request.onload = function () {
+        var data = JSON.parse(this.responseText);
+      }
+      request.send();*/
+
       /*$('#goButton').click(() => {
         $.ajax({
           url: '../beaches/' + $('#searchBox').val(),
@@ -31,7 +42,7 @@
      var search = $("#searchBox");
      var items  = $(".card");
      $("#searchBox").on("keyup", function() {
-      console.log("searching...")
+      console.log("searching...");
       var g = $(this).val().toLowerCase();
       $(".card").each(function() {
           var s = $(this).text().toLowerCase();
@@ -40,13 +51,21 @@
     });
 
     //append beach data
-    $(".linkButton").on('click', function(event){
-          console.log("clicked");
-          var beachData = document.createElement('p');
-          var linkText = document.createTextNode("swell: 5, tide: 11, wind: 4mph");
-      		beachData.appendChild(linkText);
-          var beachButton = document.getElementById(this.id);
-          beachButton.appendChild(beachData);
+    $(".linkButton").one('click', function(event){
+      console.log("clicked");
+
+      var beachData = document.createElement('p');
+      var dataText = document.createTextNode("Current conditions: Fair" /*+ data[0].shape_full*/);
+      beachData.appendChild(dataText);
+
+      const linkToPage = document.createElement('a');
+      var linkText = document.createTextNode("click here for more details");
+    	linkToPage.appendChild(linkText);
+      linkToPage.href = 'weatherdata.html';
+
+      var beachButton = document.getElementById(this.id);
+      beachButton.appendChild(beachData);
+      beachButton.appendChild(linkToPage);
     });
     //TODO: remove data once anything else is clicked
 

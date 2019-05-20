@@ -1,12 +1,12 @@
 const search = document.getElementById('searchOptions');
 //let XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-let request = new XMLHttpRequest();
+let req = new XMLHttpRequest();
 
 //http://magicseaweed.com/api/797022276644-6ludpo55lhr67659aqrvu678sftkevis.apps.googleusercontent.com/forecast/?spot_id=10
-request.open('GET', 'http://api.spitcast.com/api/county/spots/san-diego/', true);
-request.responseType = 'text';
+req.open('GET', 'http://api.spitcast.com/api/county/spots/san-diego/', true);
+req.responseType = 'text';
 
-request.onload = function () {
+req.onload = function () {
 	var data = JSON.parse(this.responseText);
 
 	const h1 = document.createElement('h1');
@@ -32,4 +32,4 @@ request.onload = function () {
 		search.appendChild(card);
 	})
 }
-request.send();
+req.send();

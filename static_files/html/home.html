@@ -2,16 +2,64 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="../css/home.css">
+    <script src="../jquery-3.3.1.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="../markerclusterer.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(() => {
+     var search = $("#searchBox");
+     var items  = $(".card");
+     $("#searchBox").on("keyup", function() {
+      console.log("searching...");
+      var g = $(this).val().toLowerCase();
+      $(".card").each(function() {
+          var s = $(this).text().toLowerCase();
+          $(this).closest('.card')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
+      });
+    });
+
+    //append beach data
+    $(".linkButton").one('click', function(event){
+      console.log("clicked");
+
+      var beachData = document.createElement('p');
+      var dataText = document.createTextNode("Current conditions: Fair");
+      beachData.appendChild(dataText);
+
+      var linkToPage = document.createElement('a');
+      var linkText = document.createTextNode("click here for more details");
+      linkToPage.appendChild(linkText);
+      linkToPage.href = 'weatherdata.html';
+
+      var beachButton = document.getElementById(this.id);
+      beachButton.appendChild(beachData);
+      beachButton.appendChild(linkToPage);
+    });
+    //TODO: remove data once anything else is clicked
+
+      $(document).ajaxError(() => {
+        $('#searchOptions').html('Error: unknown ajaxError!');
+      });
+
+    });
+    </script>
   </head>
 
   <body>
     <h1 id="title"> Local Beaches </h1>
     <div id="map" style="height: 400px; width: 100%;"> </div> <br>
-    <h2> Beaches in La Jolla: </h2>
+    <div id="searchBar">
+      <input id="searchBox" type="text" placeholder="Search Beaches...">
+      <button id="goButton"> GO </button>
+    </div>
+    <br>
+    <!-- <h2> Beaches in La Jolla: </h2> -->
     <div id="nearbyBeaches">
-      <script>
+      <div id="searchOptions"></div>
+
+
+      <!-- <script>
       const home = document.getElementById('nearbyBeaches');
       let request = new XMLHttpRequest();
       request.open('GET', 'http://api.spitcast.com/api/county/spots/san-diego/', true);
@@ -37,7 +85,7 @@
         })
       }
       request.send();
-      </script>
+    </script> -->
     </div>
 
     <footer id="footer">
@@ -51,10 +99,11 @@
 
     <script>
 
-      // use coastal api to get all beaches in California
+      // use api to get all beaches in California
       var beachesAPI;
       $.ajax({
-        url: 'https://api.coastal.ca.gov/access/v1/locations',
+        //url: 'https://api.coastal.ca.gov/access/v1/locations',
+        url: 'http://api.spitcast.com/api/spot/all',
         type: 'GET',
         async: false,   //deprecated but at least it works now??
         success: (data) => {
@@ -65,12 +114,17 @@
       var beaches = [];
       for (i = 0; i < beachesAPI.length; i++) {
         var beach = [];
-        if(beachesAPI[i]['SNDY_BEACH']==='Yes') {
+        /*if(beachesAPI[i]['SNDY_BEACH']==='Yes') {
           beach.push(beachesAPI[i]['NameMobileWeb']);
           beach.push(beachesAPI[i]['LATITUDE']);
           beach.push(beachesAPI[i]['LONGITUDE']);
           beaches.push(beach);
-        }
+        }*/
+        beach.push(beachesAPI[i]['spot_name']);
+        beach.push(beachesAPI[i]['latitude']);
+        beach.push(beachesAPI[i]['longitude']);
+        beaches.push(beach);
+
       }
 
       //marks user's current location
@@ -147,11 +201,13 @@
       }
 
     </script>
+    <script src="../script.js"></script>
     <!-- geolocation key -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSgPgFsM2dB9058bOAmGw_tZmheEM0qjc&callback=initMap"></script>
 
     <!-- beach locations api -->
     <script src="https://api.coastal.ca.gov/access/v1/locations" type="text/javascript"></script>
+    <script src="http://api.spitcast.com/api/spot/all" type="text/javascript"></script>
 
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 

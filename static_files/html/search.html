@@ -53,16 +53,16 @@
     $(".linkButton").one('click', function(event){
       console.log("clicked");
 
-      var beachData = document.createElement('p');
-      var dataText = document.createTextNode("Current conditions: Fair");
+      const beachData = document.createElement('p');
+      const dataText = document.createTextNode("Current conditions: Fair");
       beachData.appendChild(dataText);
 
-      var linkToPage = document.createElement('a');
-      var linkText = document.createTextNode("click here for more details");
+      const linkToPage = document.createElement('a');
+      const linkText = document.createTextNode("click here for more details");
     	linkToPage.appendChild(linkText);
       linkToPage.href = 'weatherdata.html';
 
-      var beachButton = document.getElementById(this.id);
+      const beachButton = document.getElementById(this.id);
       beachButton.appendChild(beachData);
       beachButton.appendChild(linkToPage);
     });

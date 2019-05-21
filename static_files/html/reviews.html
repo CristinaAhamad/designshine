@@ -1,14 +1,91 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="../css/reviews.css"
+    <link rel="stylesheet" href="../css/reviews.css">
+    <script src="../jquery-3.3.1.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   </head>
 
   <body>
     <h2>Reviews</h2>
     <p>review 1</p>
     <p>review 2</p>
+
+    <hr/>
+    <h2>More reviews from Google users</h2>
+    <div>
+      <strong>Overall Google rating:</strong>
+      <span id="rating"></span>
+    </div>
+    <div id="googleReviews">
+
+    </div>
+
+    <div class="reviews"><ul class="review-list"></ul></div>
+    <div id="map"></div>
+
+    <script>
+      //get google reviews
+      var map, service;
+
+      function initMap() {
+        var blacksBeach = new google.maps.LatLng(32.8896, -117.2536);
+
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: blacksBeach,
+          zoom: 15
+        });
+
+        var request = {
+          location: blacksBeach,
+          radius: "500",
+          types: ['park']
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(request, searchResult);
+      }
+
+      function searchResult(results, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          // show first result on map and request for details
+          var place = results[0];
+          var marker = new google.maps.Marker({
+            position: place.geometry.location,
+            map: map,
+            title: place.name
+          });
+          var infowindow = new google.maps.InfoWindow({
+            content: place.name
+          });
+          infowindow.open(map, marker);
+
+          service.getDetails({placeId: place.place_id}, function(place, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+              let rating = document.querySelector('#rating');
+              let reviewEl = document.querySelector('.review-list');
+
+              rating.innerHTML = place.rating;
+
+              for (let review of place.reviews){
+                let rev = document.createElement('div');
+                rev.innerHTML = `<div>Author: ${review.author_name}</div>
+                                <p>${review.text}</p>
+                                <div>Rating: ${review.rating} star(s)</div>
+                                <br><hr width="75%"/><br>`;
+                reviewEl.appendChild(rev);
+              }
+            }
+          });
+        }
+      }
+    </script>
+
     <button> <a href="weatherdata.html"> Back </a> </button>
+
+    <!-- google reviews api -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSgPgFsM2dB9058bOAmGw_tZmheEM0qjc&callback=initMap&libraries=places"
+    async defer></script>
   </body>
 
   <footer>

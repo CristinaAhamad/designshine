@@ -23,6 +23,8 @@
     $(".linkButton").one('click', function(event){
       console.log("clicked");
 
+      var expand = document.getElementById(this.id + 'Info');
+
       var beachData = document.createElement('p');
       var dataText = document.createTextNode("Current conditions: Fair");
       beachData.appendChild(dataText);
@@ -35,6 +37,28 @@
       var beachButton = document.getElementById(this.id);
       beachButton.appendChild(beachData);
       beachButton.appendChild(linkToPage);
+
+      var $button = $('#' + this.id),
+        $text   = $('#' + this.id + 'Info'),
+        visible = true;
+
+      $button.click(function(){
+      if ( visible ) {
+        $text.slideUp('fast',function(){
+          $text.addClass('hide')
+               .slideDown(0);
+        });
+      } else {
+        $text.slideUp(0,function(){
+          $text.removeClass('hide')
+               .slideDown('fast');
+        });
+      }
+      visible = ! visible;
+      });
+
+      expand.appendChild(beachData);
+      expand.appendChild(linkToPage);
     });
     //TODO: remove data once anything else is clicked
 
@@ -179,7 +203,7 @@
                 var html = '';
                 html += '<div class="infowindow-content">';
                 html += beaches[i][0];
-                html += '</br> <a href="weatherdata.html">'+ 'View weather conditions' +'</a>';
+                html += '</br> <a href="weatherdata.html">'+ 'View weather details' +'</a>';
                 html += '</div>';
                 label.setContent(html);
                 label.open(map, marker);
@@ -212,6 +236,8 @@
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
     <!--a href="http://magicseaweed.com"><img src="https://im-1-uk.msw.ms/msw_powered_by.png"></a-->
-
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </body>
 </html>

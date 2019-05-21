@@ -76,6 +76,15 @@ body {
   border: none;
   background: none;
 }
+.hide {
+   position: absolute !important;
+   top: -9999px !important;
+   left: -9999px !important;
+}
+
+.this-will-not-be-read {
+   display: none !important;
+}
 
 footer {
   padding: 10px;

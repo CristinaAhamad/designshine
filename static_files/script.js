@@ -16,19 +16,33 @@ req.onload = function () {
 
 	data.forEach(beach => {
 		console.log("spot:", beach.spot_name);
+		//check if beach name is 1 or 2+ words
+		var beachName = beach.spot_name;
+		var words = beachName.split(' ').filter(function(v){return v!==''});
+		if (words.length > 1) {
+			beachName = beachName.replace(/ /g, '');
+		}
 
 		//Beach names for search
 		const card = document.createElement('div');
 		card.setAttribute('class', 'card');
 		const link = document.createElement('button');
+		link.setAttribute('data-toggle', 'collapse');
+		link.setAttribute('data-target', '#'+ beachName +'Info');
+		link.setAttribute('type', 'button');
 		var linkText = document.createTextNode(beach.spot_name);
 		link.appendChild(linkText);
 		link.setAttribute('class', 'linkButton');
-		link.setAttribute('id', beach.spot_name);
+		link.setAttribute('id', beachName);
 		link.setAttribute("style", "line-height: 40px; font-size: 20px;");
 		//link.href = "weatherdata.html";
 
+		var collapsed = document.createElement('div');
+		collapsed.setAttribute('class', 'collapse');
+		collapsed.setAttribute('id', beachName +'Info');
+
 		card.appendChild(link);
+		card.appendChild(collapsed);
 		search.appendChild(card);
 	})
 }

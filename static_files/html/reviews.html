@@ -29,15 +29,15 @@
       var map, service;
 
       function initMap() {
-        var blacksBeach = new google.maps.LatLng(32.8896, -117.2536);
+        var oceansideHarbor = new google.maps.LatLng(33.2078, -117.3950);
 
         map = new google.maps.Map(document.getElementById("map"), {
-          center: blacksBeach,
+          center: oceansideHarbor,
           zoom: 15
         });
 
         var request = {
-          location: blacksBeach,
+          location: oceansideHarbor,
           radius: "500",
           types: ['park']
         };

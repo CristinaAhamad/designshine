@@ -2,14 +2,51 @@
 <html>
   <head>
     <link rel="stylesheet" href="../css/reviews.css">
-    <script src="../jquery-3.3.1.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
+        authDomain: "designshine-surfapp.firebaseapp.com",
+        databaseURL: "https://designshine-surfapp.firebaseio.com",
+        projectId: "designshine-surfapp",
+        storageBucket: "designshine-surfapp.appspot.com",
+        messagingSenderId: "257277932654",
+        appId: "1:257277932654:web:365249aeda12648e"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="../jquery-3.3.1.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(() => {
+        var html = '';
+        const database = firebase.database();
+        database.ref('reviews/').once('value', (snapshot) => {
+          const data = snapshot.val();
+          console.log('You received some data!', Object.keys(data));
+          //$('#reviews').html(<p> data[Object.keys(data)]</p>);
+          (Object.keys(data)).forEach(function(id) {
+            html += '<p>';
+            html += data[id];
+            html += '</p>';
+            html += '<br><hr width="75%"/>`';
+          });
+          $('#reviews').html(html);
+        });
+
+      });
+    </script>
+
   </head>
 
   <body>
     <h2>Reviews</h2>
-    <p>review 1</p>
-    <p>review 2</p>
+    <div id="reviews">
+    </div>
 
     <hr/>
     <h2>More reviews from Google users</h2>

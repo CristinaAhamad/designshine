@@ -32,8 +32,9 @@
       var linkToPage = document.createElement('a');
       var linkText = document.createTextNode("click here for more details");
       linkToPage.appendChild(linkText);
-      linkToPage.href = 'weatherdata.html';
-
+      linkToPage.href = 'weatherdata.html';                           //this line actually works
+      //linkToPage.href = 'weatherdata.html' + '#' + this.id;             //this line is just test code
+      //console.log('weatherdata.html' + '#' + this.id);
       var beachButton = document.getElementById(this.id);
       beachButton.appendChild(beachData);
       beachButton.appendChild(linkToPage);
@@ -114,10 +115,11 @@
 
     <footer id="footer">
       <div id="menu">
-        <br>
-        <button id="searchButton"> <a href="search.html"> Search </a> </button>
-        <button id="homeButton"> <a href="home.html"> Home </a> </button>
-        <button id="profileButton"> <a href="profile.html"> Profile </a> </button>
+        <!--button id="searchButton"> <a href="search.html"> Search </a> </button-->
+        <!--button id="homeButton"> <a href="home.html"> Home </a> </button-->
+        <a href="home.html"> <img src="../images/home.png"> </a>
+        <!--button id="profileButton"> <a href="profile.html"> Profile </a> </button-->
+        <a href="profile.html"> <img src="../images/profile.png"> </a>
       </div>
     </footer>
 

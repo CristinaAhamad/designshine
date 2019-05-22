@@ -1,26 +1,54 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href= "../css/writereview.css"
+    <link rel="stylesheet" href= "../css/writereview.css">
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
+        authDomain: "designshine-surfapp.firebaseapp.com",
+        databaseURL: "https://designshine-surfapp.firebaseio.com",
+        projectId: "designshine-surfapp",
+        storageBucket: "designshine-surfapp.appspot.com",
+        messagingSenderId: "257277932654",
+        appId: "1:257277932654:web:365249aeda12648e"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="../jquery-3.3.1.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(() => {
+        let database = firebase.database();
+        $('#submitButton').click(() => {
+          const review = $('#reviewBox').val();
+          console.log(review);
+          database.ref('reviews/' + review).set({a:'b'});
+        });
+      });
+    </script>
+
   </head>
 
   <body>
     <h2>Write A Review</h2>
     <p>Thoughts? Write a review of the beach you visited below!</p>
     <form>
-      <input type="text" name="review"><br>
+      <input id="reviewBox" type="text" name="review"><br>
     </form>
     <br>
     <button> <a href="weatherdata.html"> Back </a> </button>
-    <button> <a href="reviews.html"> Submit </a> </button>
+    <button id="submitButton"> <a href="reviews.html"> Submit </a> </button>
   </body>
 
-  <footer>
+  <footer id="footer">
     <div id="menu">
-      <br>
-      <button id="searchButton"> <a href="search.html"> Search </a> </button>
-      <button id="homeButton"> <a href="home.html"> Home </a> </button>
-      <button id="profileButton"> <a href="profile.html"> Profile </a> </button>
+      <a href="home.html"> <img src="../images/home.png"> </a>
+      <a href="profile.html"> <img src="../images/profile.png"> </a>
     </div>
   </footer>
 </html>

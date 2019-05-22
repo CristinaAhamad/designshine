@@ -26,8 +26,8 @@
         let database = firebase.database();
         $('#submitButton').click(() => {
           const review = $('#reviewBox').val();
-          console.log(review);
-          database.ref('reviews/' + review).set({a:'b'});
+          console.log("review: "+review);
+          database.ref('reviews/').push(review);
         });
       });
     </script>

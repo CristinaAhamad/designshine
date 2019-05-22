@@ -65,7 +65,7 @@
           console.log("spot id: " + spotNum);
 
           let request = new XMLHttpRequest();
-          request.open('GET', ('http://api.spitcast.com/api/spot/forecast/' + spotNum), true);
+          /*request.open('GET', ('http://api.spitcast.com/api/spot/forecast/' + spotNum), true);
           request.setRequestHeader('Access-Control-Allow-Headers', '*');
           request.responseType = 'text';
           request.onload = function () {
@@ -99,9 +99,9 @@
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
-            beachData.appendChild(p5);*/
+            beachData.appendChild(p5);
           }
-          request.send();
+          request.send();*/
         });
 
         linkToPage.onclick = function() {
@@ -166,7 +166,14 @@
     <div id="beachPopup" class="popup">
       <div class="popup-content">
         <span class="close">&times;</span>
-        <p id="content"></p>
+        <div id="content">
+        <!--h2> Ponto </h2>
+        <p>Current Conditions: Fair </p>
+        <p>Swell: Fair </p>
+        <p>Tide: Fair </p>
+        <p>Wind: Poor-Fair </p>
+        <p>Wave size: 4ft </p-->
+        </div>
       </div>
 
     </div>

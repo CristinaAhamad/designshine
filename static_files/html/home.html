@@ -5,38 +5,117 @@
     <script src="../jquery-3.3.1.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="../markerclusterer.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+    <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
+            authDomain: "designshine-surfapp.firebaseapp.com",
+            databaseURL: "https://designshine-surfapp.firebaseio.com",
+            projectId: "designshine-surfapp",
+            storageBucket: "designshine-surfapp.appspot.com",
+            messagingSenderId: "257277932654"
+          };
+          firebase.initializeApp(config);
+    </script>
 
     <script type="text/javascript">
+
+
     $(document).ready(() => {
-     var search = $("#searchBox");
-     var items  = $(".card");
-     $("#searchBox").on("keyup", function() {
-      console.log("searching...");
-      var g = $(this).val().toLowerCase();
-      $(".card").each(function() {
-          var s = $(this).text().toLowerCase();
-          $(this).closest('.card')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
+       var search = $("#searchBox");
+       var items  = $(".card");
+       $("#searchBox").on("keyup", function() {
+        console.log("searching...");
+        var g = $(this).val().toLowerCase();
+        $(".card").each(function() {
+            var s = $(this).text().toLowerCase();
+            $(this).closest('.card')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
+        });
       });
-    });
 
-    //append beach data
-    $(".linkButton").one('click', function(event){
-      console.log("clicked");
+      //append beach data
+      $(".linkButton").one('click', function(event){
+        const database = firebase.database();
 
-      var expand = document.getElementById(this.id + 'Info');
+        console.log("clicked");
 
-      var beachData = document.createElement('p');
-      var dataText = document.createTextNode("Current conditions: Fair");
-      beachData.appendChild(dataText);
+        var expand = document.getElementById(this.id + 'Info');
 
-      var linkToPage = document.createElement('a');
-      var linkText = document.createTextNode("click here for more details");
-      linkToPage.appendChild(linkText);
-      linkToPage.href = 'weatherdata.html';
+        var beachData = document.createElement('p');
+        var dataText = document.createTextNode("Current conditions: Fair");
+        beachData.appendChild(dataText);
 
-      var beachButton = document.getElementById(this.id);
-      beachButton.appendChild(beachData);
-      beachButton.appendChild(linkToPage);
+        var linkToPage = document.createElement('a');
+        var linkText = document.createTextNode("click here for more details");
+        linkToPage.appendChild(linkText);
+
+        var beachButton = document.getElementById(this.id);
+        beachButton.appendChild(beachData);
+        beachButton.appendChild(linkToPage);
+
+        /*Popup code*/
+        var popup = document.getElementById("beachPopup");
+        var span = document.getElementsByClassName("close")[0];
+
+        var name = this.id;
+        var spotNum;
+        let db = database.ref('beach-ids/'+name).once('value',(snapshot) => {
+          spotNum = snapshot.val();
+          console.log("spot id: " + spotNum);
+
+          let request = new XMLHttpRequest();
+          request.open('GET', ('http://api.spitcast.com/api/spot/forecast/' + spotNum), true);
+          request.setRequestHeader('Access-Control-Allow-Headers', '*');
+          request.responseType = 'text';
+          request.onload = function () {
+            var data = JSON.parse(this.responseText);
+
+            console.log(data[0].spot_name);
+            $('#content').append(data[0].spot_name);
+
+            /*const p1 = document.createElement('p');
+            var shape = document.createTextNode("Current conditions: " + data[0].shape_full);
+            p1.appendChild(shape);
+
+            const p2 = document.createElement('p');
+            var swell = document.createTextNode("Swell: " + data[0].shape_detail.swell);
+            p2.appendChild(swell);
+
+            const p3 = document.createElement('p');
+            var tide = document.createTextNode("Tide: " + data[0].shape_detail.tide);
+            p3.appendChild(tide);
+
+            const p4 = document.createElement('p');
+            var wind = document.createTextNode("Wind: " + data[0].shape_detail.wind);
+            p4.appendChild(wind);
+
+            const p5 = document.createElement('p');
+            var wave = document.createTextNode("Wave size: " + data[0].size + "ft.");
+            p5.appendChild(wave);
+
+            const beachData = document.getElementById('popup-content');
+            beachData.appendChild(p1);
+            beachData.appendChild(p2);
+            beachData.appendChild(p3);
+            beachData.appendChild(p4);
+            beachData.appendChild(p5);*/
+          }
+          request.send();
+        });
+
+        linkToPage.onclick = function() {
+          popup.style.display = "block";
+        }
+        span.onclick = function() {
+          popup.style.display = "none";
+        }
+        window.onclick = function(event) {
+          if (event.target == popup) {
+            popup.style.display = "none";
+          }
+        }
+        /*end popup*/
 
       var $button = $('#' + this.id),
         $text   = $('#' + this.id + 'Info'),
@@ -60,7 +139,6 @@
       expand.appendChild(beachData);
       expand.appendChild(linkToPage);
     });
-    //TODO: remove data once anything else is clicked
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');
@@ -82,7 +160,17 @@
     <br>
     <!-- <h2> Beaches in La Jolla: </h2> -->
     <div id="nearbyBeaches">
-      <div id="searchOptions"></div>
+      <div id="searchOptions">
+
+    <!-- Pop up-->
+    <div id="beachPopup" class="popup">
+      <div class="popup-content">
+        <span class="close">&times;</span>
+        <p id="content"></p>
+      </div>
+
+    </div>
+  </div>
 
       <script>
       // use api to get all beaches in California
@@ -110,7 +198,6 @@
         beach.push(beachesAPI[i]['latitude']);
         beach.push(beachesAPI[i]['longitude']);
         beaches.push(beach);
-
       }
 
       //marks user's current location

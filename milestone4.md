@@ -20,7 +20,9 @@ The homepage has now adopted the layout that was previously on the search page, 
 The search page now integrates reviews submitted by users as well as Google reviews. Before, the reviews were merely indicated by italicized words; now, reviews are partitioned by horizontal lines so it is easier for readers of the reviews to skim.  
 
 ## User Actions
-### User Action 1:
+### User Action 1: Get weather conditions
+You want to check the surf at Pacific Beach. From the home page, you can either type it into the search bar at the top, scroll through the list to find it, or find it on the map . Click on the link below to view the conditions in a new page.
 
+### User Action 2: Reviews
+You want to post a review for a beach you recently visited, Scripps Pier. Navigate to the Scripps Pier weather details page by searching for it and clicking to view details.  Click “post a review” at the bottom of  the page and add whatever review you want, then find your review on the beach’s main review page.
 
-### User Action 2:

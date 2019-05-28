@@ -35,7 +35,7 @@
       });
 
       //append beach data
-      $(".linkButton").one('click', function(event){
+      $(".linkButton").on('click', function(event){
         const database = firebase.database();
 
         console.log("clicked");
@@ -60,21 +60,22 @@
 
         var name = this.id;
         var spotNum;
-        let db = database.ref('beach-ids/'+name).once('value',(snapshot) => {
+        let db = database.ref('beach-ids/' + name).on('value',(snapshot) => {
           spotNum = snapshot.val();
           console.log("spot id: " + spotNum);
+          apiURL = 'http://api.spitcast.com/api/spot/forecast/' + spotNum;
 
           let request = new XMLHttpRequest();
-          /*request.open('GET', ('http://api.spitcast.com/api/spot/forecast/' + spotNum), true);
-          request.setRequestHeader('Access-Control-Allow-Headers', '*');
+          request.open('GET', ('https://cors-anywhere.herokuapp.com/'+ apiURL), true);
           request.responseType = 'text';
           request.onload = function () {
             var data = JSON.parse(this.responseText);
 
-            console.log(data[0].spot_name);
-            $('#content').append(data[0].spot_name);
+            const h1 = document.createElement('h1');
+            var name = document.createTextNode(data[0].spot_name);
+            h1.appendChild(name);
 
-            /*const p1 = document.createElement('p');
+            const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[0].shape_full);
             p1.appendChild(shape);
 
@@ -94,14 +95,20 @@
             var wave = document.createTextNode("Wave size: " + data[0].size + "ft.");
             p5.appendChild(wave);
 
-            const beachData = document.getElementById('popup-content');
+            var reviewlink = document.createElement('a');
+            var linkText = document.createTextNode("reviews");
+            reviewlink.appendChild(linkText);
+            reviewlink.href = "reviews.html";
+
+            const beachData = document.getElementById('content');
+            beachData.appendChild(h1);
             beachData.appendChild(p1);
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
           }
-          request.send();*/
+          request.send();
         });
 
         linkToPage.onclick = function() {
@@ -109,10 +116,12 @@
         }
         span.onclick = function() {
           popup.style.display = "none";
+          $('#content').empty();
         }
         window.onclick = function(event) {
           if (event.target == popup) {
             popup.style.display = "none";
+            $('#content').empty();
           }
         }
         /*end popup*/

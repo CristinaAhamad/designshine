@@ -96,7 +96,7 @@
             p5.appendChild(wave);
 
             var reviewlink = document.createElement('a');
-            var linkText = document.createTextNode("reviews");
+            var linkText = document.createTextNode("See beach reviews");
             reviewlink.appendChild(linkText);
             reviewlink.href = "reviews.html";
 
@@ -107,6 +107,7 @@
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
+            beachData.appendChild(reviewlink);
           }
           request.send();
         });

@@ -34,25 +34,11 @@
         });
       });
 
+      const database = firebase.database();
+
       //append beach data
       $(".linkButton").on('click', function(event){
-        const database = firebase.database();
-
         console.log("clicked");
-
-        var expand = document.getElementById(this.id + 'Info');
-
-        var beachData = document.createElement('p');
-        var dataText = document.createTextNode("Current conditions: Fair");
-        beachData.appendChild(dataText);
-
-        var linkToPage = document.createElement('a');
-        var linkText = document.createTextNode("click here for more details");
-        linkToPage.appendChild(linkText);
-
-        var beachButton = document.getElementById(this.id);
-        beachButton.appendChild(beachData);
-        beachButton.appendChild(linkToPage);
 
         /*Popup code*/
         var popup = document.getElementById("beachPopup");
@@ -70,6 +56,7 @@
           request.responseType = 'text';
           request.onload = function () {
             var data = JSON.parse(this.responseText);
+            currCond = data[0].shape_full;
 
             const h1 = document.createElement('h1');
             var name = document.createTextNode(data[0].spot_name);
@@ -78,6 +65,33 @@
             const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[0].shape_full);
             p1.appendChild(shape);
+
+            const meter = document.createElement('meter');
+            meter.min = '0';
+            meter.max = '5';
+            if(data[0].shape_full.toString() == "Poor"){
+              meter.value = '1';
+              meter.high = '.75';
+              meter.low = '.50';
+              meter.optimum = '.25';
+            }
+            else if(data[0].shape_full.toString() == "Poor-Fair"){
+              meter.value = '2';
+              meter.high = '.75';
+              meter.optimum = '.25';
+            }
+            else if(data[0].shape_full.toString() == "Fair"){
+              meter.value = '3';
+              meter.high = '.75';
+              meter.optimum = '.25';
+            }
+            else if(data[0].shape_full.toString() == "Good"){
+              meter.value = '4';
+            }
+            else if(data[0].shape_full.toString() == "Great"){
+              meter.value = '5';
+            }
+
 
             const p2 = document.createElement('p');
             var swell = document.createTextNode("Swell: " + data[0].shape_detail.swell);
@@ -103,6 +117,7 @@
             const beachData = document.getElementById('content');
             beachData.appendChild(h1);
             beachData.appendChild(p1);
+            beachData.appendChild(meter);
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
@@ -111,43 +126,36 @@
           request.send();
         });
 
-        linkToPage.onclick = function() {
           popup.style.display = "block";
-        }
-        span.onclick = function() {
-          popup.style.display = "none";
-          $('#content').empty();
-        }
-        window.onclick = function(event) {
-          if (event.target == popup) {
+
+          span.onclick = function() {
             popup.style.display = "none";
             $('#content').empty();
           }
-        }
+          window.onclick = function(event) {
+            if (event.target == popup) {
+              popup.style.display = "none";
+              $('#content').empty();
+            }
+          }
+        });
         /*end popup*/
 
-      var $button = $('#' + this.id),
-        $text   = $('#' + this.id + 'Info'),
-        visible = true;
-
-      $button.click(function(){
-      if ( visible ) {
-        $text.slideUp('fast',function(){
-          $text.addClass('hide')
-               .slideDown(0);
+        /*Reviews*/
+        var html = '';
+        database.ref('reviews/').once('value', (snapshot) => {
+          const data = snapshot.val();
+          console.log('You received some data!', Object.keys(data));
+          //$('#reviews').html(<p> data[Object.keys(data)]</p>);
+          (Object.keys(data)).forEach(function(id) {
+            html += '<p>';
+            html += data[id];
+            html += '</p>';
+            html += '<br><hr width="75%"/>`';
+          });
+          $('#reviews').html(html);
         });
-      } else {
-        $text.slideUp(0,function(){
-          $text.removeClass('hide')
-               .slideDown('fast');
-        });
-      }
-      visible = ! visible;
-      });
 
-      expand.appendChild(beachData);
-      expand.appendChild(linkToPage);
-    });
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');
@@ -187,13 +195,81 @@
             <div class="popup-content">
               <span class="close">&times;</span>
               <div id="content">
-              <!--h2> Ponto </h2>
-              <p>Current Conditions: Fair </p>
-              <p>Swell: Fair </p>
-              <p>Tide: Fair </p>
-              <p>Wind: Poor-Fair </p>
-              <p>Wave size: 4ft </p-->
               </div>
+              <div>
+              <h3>Reviews</h3>
+              <div id="reviews">
+              </div>
+              <h3>Reviews from Google users</h3>
+              <div>
+                <strong>Overall Google rating:</strong>
+                <span id="rating"></span>
+              </div>
+              <div id="googleReviews">
+              </div>
+              <div class="reviews"><ul class="review-list"></ul></div>
+              <div id="map"></div>
+              <script>
+                //get google reviews
+                var map, service;
+
+                function initMap() {
+                  var oceansideHarbor = new google.maps.LatLng(33.2078, -117.3950);
+
+                  map = new google.maps.Map(document.getElementById("map"), {
+                    center: oceansideHarbor,
+                    zoom: 15
+                  });
+
+                  var request = {
+                    location: oceansideHarbor,
+                    radius: "500",
+                    types: ['park']
+                  };
+
+                  service = new google.maps.places.PlacesService(map);
+                  service.nearbySearch(request, searchResult);
+                }
+
+                function searchResult(results, status) {
+                  if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    // show first result on map and request for details
+                    var place = results[0];
+                    var marker = new google.maps.Marker({
+                      position: place.geometry.location,
+                      map: map,
+                      title: place.name
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                      content: place.name
+                    });
+                    infowindow.open(map, marker);
+
+                    service.getDetails({placeId: place.place_id}, function(place, status) {
+                      if (status == google.maps.places.PlacesServiceStatus.OK) {
+                        let rating = document.querySelector('#rating');
+                        let reviewEl = document.querySelector('.review-list');
+
+                        rating.innerHTML = place.rating;
+
+                        for (let review of place.reviews){
+                          let rev = document.createElement('div');
+                          rev.innerHTML = `<div>Author: ${review.author_name}</div>
+                                          <p>${review.text}</p>
+                                          <div>Rating: ${review.rating} star(s)</div>
+                                          <br><hr width="75%"/><br>`;
+                          reviewEl.appendChild(rev);
+                        }
+                      }
+                    });
+                  }
+                }
+              </script>
+
+              <!-- google reviews api -->
+              <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSgPgFsM2dB9058bOAmGw_tZmheEM0qjc&callback=initMap&libraries=places"
+              async defer></script>
+            </div>
             </div>
         </div>
       </div>
@@ -228,12 +304,6 @@
       var beaches = [];
       for (i = 0; i < beachesAPI.length; i++) {
         var beach = [];
-        /*if(beachesAPI[i]['SNDY_BEACH']==='Yes') {
-          beach.push(beachesAPI[i]['NameMobileWeb']);
-          beach.push(beachesAPI[i]['LATITUDE']);
-          beach.push(beachesAPI[i]['LONGITUDE']);
-          beaches.push(beach);
-        }*/
         beach.push(beachesAPI[i]['spot_name']);
         beach.push(beachesAPI[i]['latitude']);
         beach.push(beachesAPI[i]['longitude']);

@@ -158,35 +158,59 @@
   </head>
 
   <body>
-  <div class="map_container">
-    <h1 id="title"> Local Beaches </h1>
-    <div id="map" style="height: 400px; width: 100%;"> </div> <br>
-  </div>
-    <div id="searchBar">
-      <input id="searchBox" type="text" placeholder="Search Beaches...">
-      <button id="goButton"> GO </button>
-    </div>
-    <br>
-    <!-- <h2> Beaches in La Jolla: </h2> -->
-    <div id="nearbyBeaches">
-      <div id="searchOptions">
+    <div class="content">
+      <div class="top">
+        <h1 id="title"> Local Beaches </h1>
 
-    <!-- Pop up-->
-    <div id="beachPopup" class="popup">
-      <div class="popup-content">
-        <span class="close">&times;</span>
-        <div id="content">
-        <!--h2> Ponto </h2>
-        <p>Current Conditions: Fair </p>
-        <p>Swell: Fair </p>
-        <p>Tide: Fair </p>
-        <p>Wind: Poor-Fair </p>
-        <p>Wave size: 4ft </p-->
+        <!--SEARCH BAR-->
+        <div id="searchBar">
+          <input id="searchBox" type="text" placeholder="Search Beaches...">
+          <button id="goButton"> GO </button>
         </div>
       </div>
 
+
+      <div class="container">
+        <!--MAP-->
+        <div class="left">
+          <div id="map" style="height: 100%; width: 100%;"> </div> <br>
+        </div>
+
+        <!--BEACH LIST-->
+        <div class="right">
+          <!-- <h2> Beaches in La Jolla: </h2> -->
+          <div id="nearbyBeaches">
+            <div id="searchOptions"></div>
+          </div>
+
+          <div id="beachPopup" class="popup">
+            <div class="popup-content">
+              <span class="close">&times;</span>
+              <div id="content">
+              <!--h2> Ponto </h2>
+              <p>Current Conditions: Fair </p>
+              <p>Swell: Fair </p>
+              <p>Tide: Fair </p>
+              <p>Wind: Poor-Fair </p>
+              <p>Wave size: 4ft </p-->
+              </div>
+            </div>
+        </div>
+      </div>
+      </div>
+
+      <!--FOOTER MENU-->
+      <footer id="footer">
+        <div id="menu">
+          <!--button id="searchButton"> <a href="search.html"> Search </a> </button-->
+          <!--button id="homeButton"> <a href="home.html"> Home </a> </button-->
+          <a href="home.html"> <img src="../images/home.png"> </a>
+          <!--button id="profileButton"> <a href="profile.html"> Profile </a> </button-->
+          <a href="profile.html"> <img src="../images/profile.png"> </a>
+       </footer>
+
     </div>
-  </div>
+    <!--end of content-->
 
       <script>
       // use api to get all beaches in California

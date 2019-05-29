@@ -56,3 +56,8 @@ img {
 .reviews {
   margin-bottom: 75px;
 }
+
+#reviewBox {
+  height: 150px;
+  width: 500px;
+}

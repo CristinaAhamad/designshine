@@ -56,57 +56,62 @@
           request.responseType = 'text';
           request.onload = function () {
             var data = JSON.parse(this.responseText);
-            currCond = data[0].shape_full;
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var hour = today.getHours();
+            console.log("date: " + date + " & hour: " + hour);
+            currCond = data[hour].shape_full;
 
             const h1 = document.createElement('h1');
-            var name = document.createTextNode(data[0].spot_name);
+            var name = document.createTextNode(data[hour].spot_name);
             h1.appendChild(name);
 
             const p1 = document.createElement('p');
-            var shape = document.createTextNode("Current conditions: " + data[0].shape_full);
+            var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
             p1.appendChild(shape);
 
             const meter = document.createElement('meter');
             meter.min = '0';
             meter.max = '5';
-            if(data[0].shape_full.toString() == "Poor"){
+
+            if(data[hour].shape_full.toString() == "Poor"){
               meter.value = '1';
               meter.high = '.75';
               meter.low = '.50';
               meter.optimum = '.25';
             }
-            else if(data[0].shape_full.toString() == "Poor-Fair"){
+            else if(data[hour].shape_full.toString() == "Poor-Fair"){
               meter.value = '2';
               meter.high = '.75';
               meter.optimum = '.25';
             }
-            else if(data[0].shape_full.toString() == "Fair"){
+            else if(data[hour].shape_full.toString() == "Fair"){
               meter.value = '3';
               meter.high = '.75';
               meter.optimum = '.25';
             }
-            else if(data[0].shape_full.toString() == "Good"){
+            else if(data[hour].shape_full.toString() == "Fair-Good"){
               meter.value = '4';
             }
-            else if(data[0].shape_full.toString() == "Great"){
+            else if(data[hour].shape_full.toString() == "Good"){
               meter.value = '5';
             }
 
 
             const p2 = document.createElement('p');
-            var swell = document.createTextNode("Swell: " + data[0].shape_detail.swell);
+            var swell = document.createTextNode("Swell: " + data[hour].shape_detail.swell);
             p2.appendChild(swell);
 
             const p3 = document.createElement('p');
-            var tide = document.createTextNode("Tide: " + data[0].shape_detail.tide);
+            var tide = document.createTextNode("Tide: " + data[hour].shape_detail.tide);
             p3.appendChild(tide);
 
             const p4 = document.createElement('p');
-            var wind = document.createTextNode("Wind: " + data[0].shape_detail.wind);
+            var wind = document.createTextNode("Wind: " + data[hour].shape_detail.wind);
             p4.appendChild(wind);
 
             const p5 = document.createElement('p');
-            var wave = document.createTextNode("Wave size: " + data[0].size + "ft.");
+            var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
             p5.appendChild(wave);
 
             var reviewlink = document.createElement('a');
@@ -361,9 +366,9 @@
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
               return function() {
                 var html = '';
-                html += '<div class="infowindow-content">';
+                html += '<div class="infowindow-content"> <p class="mapName">';
                 html += beaches[i][0];
-                html += '</br> <a href="weatherdata.html">'+ 'View weather details' +'</a>';
+                html += '</p> <button class="mapButton" onclick=beachPopup()>'+ 'View weather details' +'</button>';
                 html += '</div>';
                 label.setContent(html);
                 label.open(map, marker);
@@ -382,6 +387,119 @@
                                     'Error: The Geolocation service failed.' :
                                     'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
+      }
+
+      //beach map data
+      function beachPopup() {
+        const database = firebase.database();
+        console.log("mapclicked");
+
+        /*Popup code*/
+        var popup = document.getElementById("beachPopup");
+        var span = document.getElementsByClassName("close")[0];
+
+        var name = $('.mapName').text();;
+        name = name.split(' ').join('');
+        console.log("beach name: " + name);
+        var spotNum;
+        let db = database.ref('beach-ids/' + name).on('value',(snapshot) => {
+          spotNum = snapshot.val();
+          console.log("spot id: " + spotNum);
+          apiURL = 'http://api.spitcast.com/api/spot/forecast/' + spotNum;
+
+          let request = new XMLHttpRequest();
+          request.open('GET', ('https://cors-anywhere.herokuapp.com/'+ apiURL), true);
+          request.responseType = 'text';
+          request.onload = function () {
+            var data = JSON.parse(this.responseText);
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var hour = today.getHours();
+            console.log("date: " + date + " & hour: " + hour);
+            currCond = data[hour].shape_full;
+
+            const h1 = document.createElement('h1');
+            var name = document.createTextNode(data[hour].spot_name);
+            h1.appendChild(name);
+
+            const p1 = document.createElement('p');
+            var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
+            p1.appendChild(shape);
+
+            const meter = document.createElement('meter');
+            meter.min = '0';
+            meter.max = '5';
+
+            if(data[hour].shape_full.toString() == "Poor"){
+              meter.value = '1';
+              meter.high = '.75';
+              meter.low = '.50';
+              meter.optimum = '.25';
+            }
+            else if(data[hour].shape_full.toString() == "Poor-Fair"){
+              meter.value = '2';
+              meter.high = '.75';
+              meter.optimum = '.25';
+            }
+            else if(data[hour].shape_full.toString() == "Fair"){
+              meter.value = '3';
+              meter.high = '.75';
+              meter.optimum = '.25';
+            }
+            else if(data[hour].shape_full.toString() == "Fair-Good"){
+              meter.value = '4';
+            }
+            else if(data[hour].shape_full.toString() == "Good"){
+              meter.value = '5';
+            }
+
+
+            const p2 = document.createElement('p');
+            var swell = document.createTextNode("Swell: " + data[hour].shape_detail.swell);
+            p2.appendChild(swell);
+
+            const p3 = document.createElement('p');
+            var tide = document.createTextNode("Tide: " + data[hour].shape_detail.tide);
+            p3.appendChild(tide);
+
+            const p4 = document.createElement('p');
+            var wind = document.createTextNode("Wind: " + data[hour].shape_detail.wind);
+            p4.appendChild(wind);
+
+            const p5 = document.createElement('p');
+            var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
+            p5.appendChild(wave);
+
+            var reviewlink = document.createElement('a');
+            var linkText = document.createTextNode("See beach reviews");
+            reviewlink.appendChild(linkText);
+            reviewlink.href = "reviews.html";
+
+            const beachData = document.getElementById('content');
+            beachData.appendChild(h1);
+            beachData.appendChild(p1);
+            beachData.appendChild(meter);
+            beachData.appendChild(p2);
+            beachData.appendChild(p3);
+            beachData.appendChild(p4);
+            beachData.appendChild(p5);
+            beachData.appendChild(reviewlink);
+          }
+          request.send();
+        });
+
+          popup.style.display = "block";
+
+          span.onclick = function() {
+            popup.style.display = "none";
+            $('#content').empty();
+          }
+          window.onclick = function(event) {
+            if (event.target == popup) {
+              popup.style.display = "none";
+              $('#content').empty();
+            }
+          }
       }
 
     </script>

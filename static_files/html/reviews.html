@@ -22,6 +22,17 @@
     <script src="../jquery-3.3.1.min.js"></script>
 
     <script type="text/javascript">
+      //write reviews
+      $(document).ready(() => {
+        let database = firebase.database();
+        $('#submitButton').click(() => {
+          const review = $('#reviewBox').val();
+          console.log("review: "+review);
+          database.ref('reviews/').push(review);
+        });
+      });
+
+      //display reviews
       $(document).ready(() => {
         var html = '';
         const database = firebase.database();
@@ -45,10 +56,20 @@
 
   <div>
     <h2>Reviews</h2>
+    <h3>Write A Review</h3>
+    <p>Thoughts? Write a review of the beach you visited below!</p>
+    <form>
+      <!--<input id="reviewBox" type="text" name="review"><br>-->
+      <textarea id="reviewBox" type="text" name="review"></textarea>
+    </form>
+    <br>
+    <button id="submitButton"> <a href="reviews.html"> Submit </a> </button>
+    <br>
+    <hr/>
     <div id="reviews">
     </div>
 
-    <h2>More reviews from Google users</h2>
+    <h3>More reviews from Google users</h3>
     <div>
       <strong>Overall Google rating:</strong>
       <span id="rating"></span>
@@ -62,60 +83,81 @@
 
     <script>
       //get google reviews
+      var coordinates = [];
+      $(document).ready(() => {
+        const database = firebase.database();
+        let db = database.ref('beach-coordinates/').once('value', (snapshot) => {
+          const data = snapshot.val();
+          coordinates.push(Object.values(data)[0].latitude);
+          coordinates.push(Object.values(data)[0].longitude);
+          console.log(coordinates);
+        });
+      });
+
       var map, service;
 
-      function initMap() {
-        var oceansideHarbor = new google.maps.LatLng(33.2078, -117.3950);
+      async function initMap() {
+        await new Promise(done => setTimeout(() => done(), 2000));
+        console.log('coordinates:', coordinates[0], coordinates [1]);
+
+        var beach = new google.maps.LatLng(coordinates[0], coordinates[1]);
 
         map = new google.maps.Map(document.getElementById("map"), {
-          center: oceansideHarbor,
+          center: beach,
           zoom: 15
         });
 
         var request = {
-          location: oceansideHarbor,
-          radius: "500",
-          types: ['park']
+          location: beach,
+          radius: "50",
+          query: 'beach'
         };
 
         service = new google.maps.places.PlacesService(map);
-        service.nearbySearch(request, searchResult);
-      }
+        service.textSearch(request, callback);
 
-      function searchResult(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          // show first result on map and request for details
-          var place = results[0];
-          var marker = new google.maps.Marker({
-            position: place.geometry.location,
-            map: map,
-            title: place.name
-          });
-          var infowindow = new google.maps.InfoWindow({
-            content: place.name
-          });
-          infowindow.open(map, marker);
-
-          service.getDetails({placeId: place.place_id}, function(place, status) {
-            if (status == google.maps.places.PlacesServiceStatus.OK) {
-              let rating = document.querySelector('#rating');
-              let reviewEl = document.querySelector('.review-list');
-
-              rating.innerHTML = place.rating;
-
-              for (let review of place.reviews){
-                let rev = document.createElement('div');
-                rev.innerHTML = `<div>Author: ${review.author_name}</div>
-                                <p>${review.text}</p>
-                                <div>Rating: ${review.rating} star(s)</div>
-                                <br><hr width="75%"/><br>`;
-                reviewEl.appendChild(rev);
+        function callback(results, status) {
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            var marker = new google.maps.Marker({
+              map: map,
+              place: {
+                placeId: results[0].place_id,
+                location: results[0].geometry.location
               }
-            }
-          });
+            });
+            var place_id = results[0].place_id;
+            console.log('place id:', results[0].place_id);
+            var newRequest = {
+              placeId: results[0].place_id
+            };
+
+            service.getDetails(newRequest, function(place, status) {
+              if (status == google.maps.places.PlacesServiceStatus.OK) {
+                console.log(place.reviews);
+                for (let review of place.reviews) {
+                  let rating = document.querySelector('#rating');
+                  let reviewEl = document.querySelector('.review-list');
+
+                  rating.innerHTML = place.rating;
+                  let rev = document.createElement('div');
+                  /*rev.innerHTML = `<div>Author: ${review.author_name}</div>
+                                  <p>${review.text}</p>
+                                  <div>Rating: ${review.rating} star(s)</div>
+                                  <br><hr width="75%"/><br>`;*/
+                  rev.innerHTML = `<p>${review.text}</p>
+                                  <div>Rating: ${review.rating} star(s)</div>
+                                  <br><hr width="75%"/><br>`;
+                  reviewEl.appendChild(rev);
+                }
+              }
+            });
+          }
         }
       }
     </script>
+
+    <button> <a href="home.html"> Back </a> </button>
+    <br><br><br><br><br><br><br><br>
 
     <!-- google reviews api -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSgPgFsM2dB9058bOAmGw_tZmheEM0qjc&callback=initMap&libraries=places"

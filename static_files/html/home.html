@@ -20,6 +20,16 @@
     </script>
 
     <script type="text/javascript">
+    function setCoordinates(beachName, latitude, longitude) {
+      firebase.database().ref('beach-coordinates/').remove();
+      //get beach coordinates
+      firebase.database().ref('beach-coordinates/' + beachName).set({
+        name: beachName,
+        latitude: latitude,
+        longitude: longitude
+      });
+      console.log('successfully set coordinates');
+    }
 
 
     $(document).ready(() => {
@@ -128,6 +138,8 @@
             beachData.appendChild(p4);
             beachData.appendChild(p5);
             beachData.appendChild(reviewlink);
+
+            setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
           }
           request.send();
         });

@@ -32,6 +32,8 @@ body {
 
 p {
   font-style: italic;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 footer {
@@ -49,4 +51,8 @@ img {
 #footer{
   min-width: 100%;
   margin: 0;
+}
+
+.reviews {
+  margin-bottom: 75px;
 }

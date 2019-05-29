@@ -8,9 +8,9 @@ Bhavna Gupta, Jenna Ohira, Tina Ahamad & Sarah Hall
 The target demographic of users for our app are surfers in California.  For someone that lives far from the beach, wave and weather information is hard to ascertain; in the app, users can look up wave conditions of various beaches in the area to see which beach is the ideal location to surf at that time. Users can find which beach they would like to visit, so they don’t have to physically go to different beaches in order to find the ideal surfing location at that time. This prevents users from wasting time and going to a beach where the surfing conditions are not ideal.
 
 ## UI Screenshots
-<img width="1151" alt="Screen Shot 2019-05-28 at 11 24 23 PM" src="https://user-images.githubusercontent.com/20780820/58536154-9111e700-81a4-11e9-8c68-697faa816fb4.png">
-
 <img width="986" alt="Screen Shot 2019-05-28 at 11 31 09 PM" src="https://user-images.githubusercontent.com/20780820/58536155-9111e700-81a4-11e9-92e3-49eb43745c3e.png">
+
+<img width="1151" alt="Screen Shot 2019-05-28 at 11 24 23 PM" src="https://user-images.githubusercontent.com/20780820/58536154-9111e700-81a4-11e9-8c68-697faa816fb4.png">
 
 ## Improvements
 In Milestone 4, the wave information appeared underneath the beach’s name (in the beach list); for Milestone 5, when the user clicks on a beach, the wave information is displayed in a popup window instead, making it easier to read for the user. Additionally, the current conditions (“fair”, “poor”, etc.) has a bar beneath it that will display a color corresponding to how good the conditions are. For example, “poor-fair” has a yellow bar, whereas “good” conditions will have a green bar. Finally, when a user hovers the mouse over a beach, the beach is highlighted and a darker blue in order to show the user that the name of the beach is clickable. This indicates to users that there is more to the app then just a list of beaches in the area. 

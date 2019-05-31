@@ -3,6 +3,106 @@
   <head>
     <link rel="stylesheet" href="css/index.css"
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
+        authDomain: "designshine-surfapp.firebaseapp.com",
+        databaseURL: "https://designshine-surfapp.firebaseio.com",
+        projectId: "designshine-surfapp",
+        storageBucket: "designshine-surfapp.appspot.com",
+        messagingSenderId: "257277932654",
+        appId: "1:257277932654:web:365249aeda12648e"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="jquery-3.3.1.min.js"></script>
+
+    <script type="text/javascript">
+      const database = firebase.database();
+      function showPassword() {
+        var x = document.getElementById("passwordBox");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
+      }
+
+      $(document).ready(function(){
+        database.ref('users/').on('value', (snapshot) => {
+          const data = snapshot.val();
+          console.log('users/:', data);
+        });
+
+        //logging in
+        $('#enterButton').click(function() {
+          if ($('#usernameBox').val() && $('#passwordBox').val()) {
+            var user = $('#usernameBox').val();
+            database.ref('users/' + user).on('value', (snapshot) => {
+              const data = snapshot.val();
+              if (data) {
+                database.ref('currentUser/').set({
+                  email: data.email,
+                  username: data.username,
+                  password: data.password,
+                  favorites: data.favorites
+                });
+                window.location.href='html/home.html';
+              }
+              else {
+                $('#loginError').html('Error: User doesn\'t exist!');
+              }
+            });
+          }
+
+          else {
+            $('#loginError').html('Error: Must provide valid username and password');
+          }
+        });
+
+        //creating account
+        $('#createButton').click(function() {
+          if ($('#emailBox').val() && $('#newUsernameBox').val() && $('#newPasswordBox').val()) {
+            var user = $('#newUsernameBox').val();
+
+            //check if username is taken
+            var allUsers;
+            database.ref('users/').on('value', (snapshot) => {
+              const data = snapshot.val();
+              allUsers = Object.keys(data);
+            });
+
+            if (allUsers.find(function(v){return v===user})) {
+              $('#createError').html('Error: Username already taken');
+            }
+            else {
+              database.ref('users/' + user).set({
+                email: $('#emailBox').val(),
+                username: $('#newUsernameBox').val(),
+                password: $('#newPasswordBox').val(),
+                favorites: ['']
+              });
+              console.log('successfully created profile');
+
+              database.ref('currentUser/').set({
+                email: $('#emailBox').val(),
+                username: $('#newUsernameBox').val(),
+                password: $('#newPasswordBox').val(),
+                favorites: ['']
+              });
+              window.location.href='html/home.html';
+            }
+          }
+          else {
+            $('#createError').html('Error: Invalid information');
+          }
+        });
+      });
+    </script>
   </head>
 
   <body>
@@ -12,24 +112,27 @@
       <img src="loginphoto.jpg" alt="Person on Surfboard">
     </div>
     <!--DIV for login fields (right)-->
-    <div class="logininfo">
+    <div class="logininfo" id="login">
       <h1>Welcome!</h1>
 
       <br />
 
       <h2>Log In</h2>
       <input id="usernameBox" type="text" placeholder="Username" size="20"/><br>
-      <input id="passwordBox" type="text" placeholder="Password" size="20"/><br>
-      <button id="enterButton" onclick="window.location.href='html/home.html';" >Login</button>
-
+      <input id="passwordBox" type="password" placeholder="Password" size="20"/>
+      <!--input type="checkbox" onclick="showPassword()"> Show Password -->
+      <br>
+      <button id="enterButton">Login</button>
+      <p id="loginError"></p>
 
       <br><br>
 
       <h2>Create New Account </h2>
       <input id="emailBox" type="text" placeholder="Email" size="20"/> <br>
       <input id="newUsernameBox" type="text" placeholder="Username" size="20"/> <br>
-      <input id="newPasswordBox" type="text" placeholder="Password" size="20"/> <br>
-      <button id="createButton" onclick="window.location.href='html/home.html';">Create</button>
+      <input id="newPasswordBox" type="password" placeholder="Password" size="20"/> <br>
+      <button id="createButton">Create</button> <br>
+      <p id="createError"></p>
     </div>
 
   </body>

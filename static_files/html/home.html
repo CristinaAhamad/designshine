@@ -22,7 +22,7 @@
     <script type="text/javascript">
     function setCoordinates(beachName, latitude, longitude) {
       firebase.database().ref('beach-coordinates/').remove();
-      //get beach coordinates
+      //get beach coordinates for google reviews
       firebase.database().ref('beach-coordinates/' + beachName).set({
         name: beachName,
         latitude: latitude,
@@ -56,6 +56,10 @@
       });
 
       const database = firebase.database();
+      database.ref('users/').on('value', (snapshot) => {
+        const data = snapshot.val();
+        console.log('users/:', data);
+      });
 
       //append beach data
       $(".linkButton").on('click', function(event){
@@ -136,19 +140,66 @@
             p5.appendChild(wave);
 
             var reviewlink = document.createElement('a');
-            var linkText = document.createTextNode("See beach reviews");
+            var linkText = document.createTextNode("See more reviews");
             reviewlink.appendChild(linkText);
             reviewlink.href = "reviews.html";
+            //document.getElementById('googleList').appendChild(reviewlink);
+
+            var favoriteButton = document.createElement('button');
+            var favString = 'Add to favorites';
+            var unfavString = 'Remove from favorites';
+            favoriteButton.textContent = favString;
+            favoriteButton.setAttribute('id', 'favButton');
+
+            //adding favorites to user's account
+            var newFavorites = [];
+            database.ref('currentUser/').once('value', (snapshot) => {
+              const data = snapshot.val();
+              for (beach in data.favorites) {
+                newFavorites.push(data.favorites[beach]);
+              }
+              console.log('newFavorites:', newFavorites);
+            });
+
+            favoriteButton.onclick = function() {
+              database.ref('currentUser/').once('value', (snapshot) => {
+                const data = snapshot.val();
+              });
+
+              //adding the favorite
+              console.log('textContent: ', favoriteButton.textContent);
+              if (favoriteButton.textContent === favString) {
+                newFavorites.push(data[hour].spot_name);
+                database.ref('currentUser/').update({
+                  favorites: newFavorites
+                })
+                favoriteButton.textContent = unfavString;
+                console.log('added favorite:', newFavorites);
+              }
+
+              //removing the favorite
+              else {
+                newFavorites = newFavorites.filter((keepBeach) => {
+                  return keepBeach != data[hour].spot_name;
+                })
+                database.ref('currentUser/').update({
+                  favorites: newFavorites
+                })
+                favoriteButton.textContent = favString;
+                console.log('removed favorite:', newFavorites);
+              }
+            }
 
             const beachData = document.getElementById('content');
             beachData.appendChild(h1);
+            beachData.appendChild(favoriteButton);
             beachData.appendChild(p1);
             beachData.appendChild(meter);
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
-            beachData.appendChild(reviewlink);
+            //beachData.appendChild(reviewlink);
 
             setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
             getCoordinates();
@@ -204,7 +255,6 @@
         //async function maps() {
           console.log('waiting..');
           await new Promise(done => setTimeout(() => done(), 1000));
-          console.log('coordinates:', coordinates[0], coordinates [1]);
 
           var beach = new google.maps.LatLng(coordinates[0], coordinates[1]);
 
@@ -232,7 +282,6 @@
                 }
               });
               var place_id = results[0].place_id;
-              //console.log('place id:', results[0].place_id);
               var newRequest = {
                 placeId: results[0].place_id
               };
@@ -302,7 +351,7 @@
               </div>
               <div id="googleReviews">
               </div>
-              <div class="reviews"><ul class="review-list"></ul></div>
+              <div class="reviews" id="googleList"><ul class="review-list"></ul></div>
               <div id="map"></div>
 
             </div>
@@ -314,10 +363,7 @@
       <!--FOOTER MENU-->
       <footer id="footer">
         <div id="menu">
-          <!--button id="searchButton"> <a href="search.html"> Search </a> </button-->
-          <!--button id="homeButton"> <a href="home.html"> Home </a> </button-->
           <a href="home.html"> <img src="../images/home.png"> </a>
-          <!--button id="profileButton"> <a href="profile.html"> Profile </a> </button-->
           <a href="profile.html"> <img src="../images/profile.png"> </a>
        </footer>
 
@@ -501,19 +547,21 @@
             p5.appendChild(wave);
 
             var reviewlink = document.createElement('a');
-            var linkText = document.createTextNode("See beach reviews");
+            var linkText = document.createTextNode("See more reviews");
             reviewlink.appendChild(linkText);
             reviewlink.href = "reviews.html";
+            document.getElementById('googleList').appendChild(reviewlink);
 
             const beachData = document.getElementById('content');
             beachData.appendChild(h1);
+            //put favorites button here
             beachData.appendChild(p1);
             beachData.appendChild(meter);
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
-            beachData.appendChild(reviewlink);
+            //beachData.appendChild(reviewlink);
           }
           request.send();
         });

@@ -2,6 +2,271 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="../css/profile.css">
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
+        authDomain: "designshine-surfapp.firebaseapp.com",
+        databaseURL: "https://designshine-surfapp.firebaseio.com",
+        projectId: "designshine-surfapp",
+        storageBucket: "designshine-surfapp.appspot.com",
+        messagingSenderId: "257277932654",
+        appId: "1:257277932654:web:365249aeda12648e"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="../jquery-3.3.1.min.js"></script>
+
+    <script>
+      //get profile info
+      var email, username, favorites;
+      $(document).ready(() => {
+        const database = firebase.database();
+        //database.ref('users/').remove();
+        let db = database.ref('currentUser/').on('value', (snapshot) => {
+          const data = snapshot.val();
+          email = data.email;
+          username = data.username;
+          favorites = data.favorites;
+          console.log('data:', data);
+        });
+
+      }); //end of $(document).ready({})
+
+      async function print() {
+        await new Promise(done => setTimeout(() => done(), 2500));
+
+        //display username
+        var name = document.createTextNode('Username: ' + username);
+        document.getElementById('name').appendChild(name);
+
+        //display favorites
+        if (favorites.length===1){
+          $('#favorites').html('<p> You have no favorite beaches yet! </p>');
+        }
+        else {
+          if (favorites.length > 1 && favorites[0]===""){
+            favorites.shift();
+          }
+          favorites.forEach((beachName) => {
+            var beachID = beachName;
+            var words = beachID.split(' ').filter(function(v){return v!==''});
+            if (words.length > 1) {
+              beachID = beachID.replace(/ /g, '');
+            }
+            var list = document.createElement('p');
+            const link = document.createElement('button');
+
+        		link.setAttribute('type', 'button');
+        		var linkText = document.createTextNode(beachName);
+        		link.appendChild(linkText);
+        		link.setAttribute('class', 'linkButton');
+        		link.setAttribute('id', beachID);
+        		link.setAttribute("style", "line-height: 40px; font-size: 20px;");
+            list.appendChild(link);
+            document.getElementById('favorites').appendChild(list);
+          });
+        }
+
+        $('#logoutButton').click(() => {
+          console.log('logout button clicked');
+          //update users database to match currentUser
+          database.ref('currentUser/').once('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              database.ref('users/' + data.username).update({
+              //database.ref('currentUser/').set({
+                email: data.email,
+                username: data.username,
+                password: data.password,
+                favorites: data.favorites
+              });
+            }
+          });
+          //checking users database
+          database.ref('users/').on('value', (snapshot) => {
+            const data = snapshot.val();
+            console.log('users/:', data);
+          });
+          //end of checking
+
+        });
+        //checking users database
+        const database = firebase.database();
+        database.ref('users/').on('value', (snapshot) => {
+          const data = snapshot.val();
+          console.log('users/:', data);
+        });
+        //end of checking
+
+
+        //pop up for each favorited beach
+        $(".linkButton").on('click', function(event){
+          const database = firebase.database();
+          console.log('clicked');
+          /*Popup code*/
+          var popup = document.getElementById("beachPopup");
+          var span = document.getElementsByClassName("close")[0];
+
+          var name = this.id;
+          var spotNum;
+          let db = database.ref('beach-ids/' + name).on('value',(snapshot) => {
+            spotNum = snapshot.val();
+            apiURL = 'http://api.spitcast.com/api/spot/forecast/' + spotNum;
+
+            let request = new XMLHttpRequest();
+            request.open('GET', ('https://cors-anywhere.herokuapp.com/'+ apiURL), true);
+            request.responseType = 'text';
+            request.onload = function () {
+              var data = JSON.parse(this.responseText);
+              var today = new Date();
+              var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+              var hour = today.getHours();
+
+              currCond = data[hour].shape_full;
+
+              const h1 = document.createElement('h1');
+              var name = document.createTextNode(data[hour].spot_name);
+              h1.appendChild(name);
+
+              const p1 = document.createElement('p');
+              var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
+              p1.appendChild(shape);
+
+              const meter = document.createElement('meter');
+              meter.min = '0';
+              meter.max = '5';
+
+              if(data[hour].shape_full.toString() == "Poor"){
+                meter.value = '1';
+                meter.high = '.75';
+                meter.low = '.50';
+                meter.optimum = '.25';
+              }
+              else if(data[hour].shape_full.toString() == "Poor-Fair"){
+                meter.value = '2';
+                meter.high = '.75';
+                meter.optimum = '.25';
+              }
+              else if(data[hour].shape_full.toString() == "Fair"){
+                meter.value = '3';
+                meter.high = '.75';
+                meter.optimum = '.25';
+              }
+              else if(data[hour].shape_full.toString() == "Fair-Good"){
+                meter.value = '4';
+              }
+              else if(data[hour].shape_full.toString() == "Good"){
+                meter.value = '5';
+              }
+
+
+              const p2 = document.createElement('p');
+              var swell = document.createTextNode("Swell: " + data[hour].shape_detail.swell);
+              p2.appendChild(swell);
+
+              const p3 = document.createElement('p');
+              var tide = document.createTextNode("Tide: " + data[hour].shape_detail.tide);
+              p3.appendChild(tide);
+
+              const p4 = document.createElement('p');
+              var wind = document.createTextNode("Wind: " + data[hour].shape_detail.wind);
+              p4.appendChild(wind);
+
+              const p5 = document.createElement('p');
+              var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
+              p5.appendChild(wave);
+
+              var reviewlink = document.createElement('a');
+              var linkText = document.createTextNode("Read reviews");
+              reviewlink.appendChild(linkText);
+              reviewlink.href = "reviews.html";
+              //document.getElementById('googleList').appendChild(reviewlink);
+
+              var favoriteButton = document.createElement('button');
+              var favString = 'Add to favorites';
+              var unfavString = 'Remove from favorites';
+              favoriteButton.textContent = unfavString;
+              favoriteButton.setAttribute('id', 'favButton');
+
+              //getting favorites from user's account
+              var newFavorites;
+              database.ref('currentUser/').once('value', (snapshot) => {
+                const data = snapshot.val();
+                newFavorites = data.favorites;
+              });
+
+              favoriteButton.onclick = function() {
+                database.ref('currentUser/').once('value', (snapshot) => {
+                  const data = snapshot.val();
+                });
+
+                //adding the favorite
+                console.log('textContent: ', favoriteButton.textContent);
+                if (favoriteButton.textContent === favString) {
+                  newFavorites.push(data[hour].spot_name);
+                  database.ref('currentUser/').update({
+                    favorites: newFavorites
+                  })
+                  favoriteButton.textContent = unfavString;
+                  console.log('added favorite:', newFavorites);
+                }
+
+                //removing the favorite
+                else {
+                  newFavorites = newFavorites.filter((keepBeach) => {
+                    return keepBeach != data[hour].spot_name;
+                  })
+                  database.ref('currentUser/').update({
+                    favorites: newFavorites
+                  })
+                  favoriteButton.textContent = favString;
+                  console.log('removed favorite:', newFavorites);
+                }
+              }
+
+              const beachData = document.getElementById('content');
+              beachData.appendChild(h1);
+              beachData.appendChild(favoriteButton);
+              beachData.appendChild(p1);
+              beachData.appendChild(meter);
+              beachData.appendChild(p2);
+              beachData.appendChild(p3);
+              beachData.appendChild(p4);
+              beachData.appendChild(p5);
+              beachData.appendChild(reviewlink);
+
+              //setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
+              //getCoordinates();
+            }
+            request.send();
+          });
+
+            popup.style.display = "block";
+
+            span.onclick = function() {
+              popup.style.display = "none";
+              $('#content').empty();
+              $('#favorites').empty();
+
+              window.location.reload();
+            }
+
+            window.onclick = function(event) {
+              if (event.target == popup) {
+                popup.style.display = "none";
+                $('#content').empty();
+              }
+            }
+          });
+          /*end popup*/
+      }
+      print();
+
+    </script>
+
   </head>
 
   <body>
@@ -10,9 +275,21 @@
         <h1> Profile
         <button id="logoutButton"> <a href="../index.html"> Logout</a></button> </h1>
         <h3> Account </h3>
-        <p> username </p>
-        <h3> Favorite Beaches </h3>
+        <p id="name"></p>
+        <p id="email"></p>
+
+        <div class="favs">
+          <h3> Favorite Beaches </h3>
+          <div id="favorites"></div>
+        </div>
       </div>
+
+      <div id="beachPopup" class="popup">
+        <div class="popup-content">
+          <span class="close">&times;</span>
+          <div id="content"></div>
+        </div>
+    </div>
 
 
       <footer id="footer">

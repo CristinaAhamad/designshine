@@ -222,8 +222,5 @@ img {
 }
 
 #favButton {
-  border: lightblue;
-}
-.top {
-  z-index: 0;
+  margin-bottom: -10px;
 }

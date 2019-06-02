@@ -61,9 +61,21 @@
         console.log('users/:', data);
       });
 
+      var newFavorites = [];
+      database.ref('currentUser/').on('value', (snapshot) => {
+        const data = snapshot.val();
+        newFavorites = data.favorites;
+        console.log('newFavorites:', newFavorites);
+      });
+      /*database.ref('currentUser/').update({
+        favorites: ['']
+      });*/
+
+
       //append beach data
       $(".linkButton").on('click', function(event){
         console.log("clicked");
+        document.getElementsByClassName('top')[0].style.zIndex = '0';
 
         /*Popup code*/
         var popup = document.getElementById("beachPopup");
@@ -145,35 +157,36 @@
             reviewlink.href = "reviews.html";
             //document.getElementById('googleList').appendChild(reviewlink);
 
-            var favoriteButton = document.createElement('button');
+            /*var favoriteButton = document.createElement('button');
             var favString = 'Add to favorites';
             var unfavString = 'Remove from favorites';
-            favoriteButton.textContent = favString;
-            favoriteButton.setAttribute('id', 'favButton');
+            favoriteButton.textContent = favString;*/
+            //favoriteButton.innerHTML = '<img src="../../yellowstar.png" />';
 
-            //adding favorites to user's account
-            var newFavorites = [];
-            database.ref('currentUser/').once('value', (snapshot) => {
-              const data = snapshot.val();
-              for (beach in data.favorites) {
-                newFavorites.push(data.favorites[beach]);
-              }
-              console.log('newFavorites:', newFavorites);
-            });
+            var favoriteButton = document.createElement('img');
+            favoriteButton.setAttribute('id', 'favButton');
+            var clearStar;
+
+            console.log('contains ' + data[hour].spot_name + ': ' + newFavorites.includes(data[hour].spot_name));
+            //checks favorites list to determine which color star to display on load
+            if (!newFavorites.includes(data[hour].spot_name)) {
+              favoriteButton.src = "../images/star.png";
+              clearStar = true;
+            }
+            else {
+              favoriteButton.src = "../images/yellowstar.png";
+              clearStar = false;
+            }
 
             favoriteButton.onclick = function() {
-              database.ref('currentUser/').once('value', (snapshot) => {
-                const data = snapshot.val();
-              });
-
               //adding the favorite
-              console.log('textContent: ', favoriteButton.textContent);
-              if (favoriteButton.textContent === favString) {
+              if (clearStar) {
                 newFavorites.push(data[hour].spot_name);
                 database.ref('currentUser/').update({
                   favorites: newFavorites
                 })
-                favoriteButton.textContent = unfavString;
+                favoriteButton.src = "../images/yellowstar.png";
+                clearStar = false;
                 console.log('added favorite:', newFavorites);
               }
 
@@ -185,21 +198,23 @@
                 database.ref('currentUser/').update({
                   favorites: newFavorites
                 })
-                favoriteButton.textContent = favString;
+                favoriteButton.src = "../images/star.png";
+                clearStar = true;
                 console.log('removed favorite:', newFavorites);
               }
             }
 
             const beachData = document.getElementById('content');
+            h1.insertBefore(favoriteButton, name);
             beachData.appendChild(h1);
-            beachData.appendChild(favoriteButton);
+            //beachData.appendChild(favoriteButton);
             beachData.appendChild(p1);
             beachData.appendChild(meter);
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
-            //beachData.appendChild(reviewlink);
+            beachData.appendChild(reviewlink);
 
             setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
             getCoordinates();
@@ -212,6 +227,7 @@
 
           span.onclick = function() {
             popup.style.display = "none";
+            document.getElementsByClassName('top')[0].style.zIndex = '10';
             $('#content').empty();
             $('.review-list').empty();
             $('#rating').empty();
@@ -219,6 +235,7 @@
           window.onclick = function(event) {
             if (event.target == popup) {
               popup.style.display = "none";
+              document.getElementsByClassName('top')[0].style.zIndex = '10';
               $('#content').empty();
             }
           }
@@ -235,7 +252,7 @@
             html += '<p>';
             html += data[id];
             html += '</p>';
-            html += '<br><hr width="75%"/>`';
+            html += '<br><hr width="75%"/>';
           });
           $('#reviews').html(html);
         });
@@ -468,7 +485,14 @@
       //beach map data
       function beachPopup() {
         const database = firebase.database();
+        var newFavorites = [];
+        database.ref('currentUser/').on('value', (snapshot) => {
+          const data = snapshot.val();
+          newFavorites = data.favorites;
+          console.log('newFavorites:', newFavorites);
+        });
         console.log("mapclicked");
+        document.getElementsByClassName('top')[0].style.zIndex = '0';
 
         /*Popup code*/
         var popup = document.getElementById("beachPopup");
@@ -552,9 +576,51 @@
             reviewlink.href = "reviews.html";
             document.getElementById('googleList').appendChild(reviewlink);
 
+            var favoriteButton = document.createElement('img');
+            favoriteButton.setAttribute('id', 'favButton');
+            var clearStar;
+
+            console.log('contains ' + data[hour].spot_name + ': ' + newFavorites.includes(data[hour].spot_name));
+            //checks favorites list to determine which color star to display on load
+            if (!newFavorites.includes(data[hour].spot_name)) {
+              favoriteButton.src = "../images/star.png";
+              clearStar = true;
+            }
+            else {
+              favoriteButton.src = "../images/yellowstar.png";
+              clearStar = false;
+            }
+
+            favoriteButton.onclick = function() {
+              //adding the favorite
+              if (clearStar) {
+                newFavorites.push(data[hour].spot_name);
+                database.ref('currentUser/').update({
+                  favorites: newFavorites
+                })
+                favoriteButton.src = "../images/yellowstar.png";
+                clearStar = false;
+                console.log('added favorite:', newFavorites);
+              }
+
+              //removing the favorite
+              else {
+                newFavorites = newFavorites.filter((keepBeach) => {
+                  return keepBeach != data[hour].spot_name;
+                })
+                database.ref('currentUser/').update({
+                  favorites: newFavorites
+                })
+                favoriteButton.src = "../images/star.png";
+                clearStar = true;
+                console.log('removed favorite:', newFavorites);
+              }
+            }
+
+
             const beachData = document.getElementById('content');
+            h1.insertBefore(favoriteButton, name);
             beachData.appendChild(h1);
-            //put favorites button here
             beachData.appendChild(p1);
             beachData.appendChild(meter);
             beachData.appendChild(p2);
@@ -570,11 +636,13 @@
 
           span.onclick = function() {
             popup.style.display = "none";
+            document.getElementsByClassName('top')[0].style.zIndex = '10';
             $('#content').empty();
           }
           window.onclick = function(event) {
             if (event.target == popup) {
               popup.style.display = "none";
+              document.getElementsByClassName('top')[0].style.zIndex = '10';
               $('#content').empty();
             }
           }

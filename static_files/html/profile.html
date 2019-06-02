@@ -33,7 +33,7 @@
           console.log('data:', data);
         });
 
-      }); //end of $(document).ready({})
+      });
 
       async function print() {
         await new Promise(done => setTimeout(() => done(), 2500));
@@ -90,16 +90,7 @@
             const data = snapshot.val();
             console.log('users/:', data);
           });
-          //end of checking
-
         });
-        //checking users database
-        const database = firebase.database();
-        database.ref('users/').on('value', (snapshot) => {
-          const data = snapshot.val();
-          console.log('users/:', data);
-        });
-        //end of checking
 
 
         //pop up for each favorited beach
@@ -185,10 +176,9 @@
               reviewlink.href = "reviews.html";
               //document.getElementById('googleList').appendChild(reviewlink);
 
-              var favoriteButton = document.createElement('button');
-              var favString = 'Add to favorites';
-              var unfavString = 'Remove from favorites';
-              favoriteButton.textContent = unfavString;
+              var favoriteButton = document.createElement('img');
+              favoriteButton.src = "../images/yellowstar.png";
+              var clearStar = false;
               favoriteButton.setAttribute('id', 'favButton');
 
               //getting favorites from user's account
@@ -205,12 +195,13 @@
 
                 //adding the favorite
                 console.log('textContent: ', favoriteButton.textContent);
-                if (favoriteButton.textContent === favString) {
+                if (clearStar) {
                   newFavorites.push(data[hour].spot_name);
                   database.ref('currentUser/').update({
                     favorites: newFavorites
                   })
-                  favoriteButton.textContent = unfavString;
+                  favoriteButton.src = "../images/yellowstar.png";
+                  clearStar = false;
                   console.log('added favorite:', newFavorites);
                 }
 
@@ -222,14 +213,16 @@
                   database.ref('currentUser/').update({
                     favorites: newFavorites
                   })
-                  favoriteButton.textContent = favString;
+                  favoriteButton.src = "../images/star.png";
+                  clearStar = true;
                   console.log('removed favorite:', newFavorites);
                 }
               }
 
               const beachData = document.getElementById('content');
+              h1.insertBefore(favoriteButton, name);
               beachData.appendChild(h1);
-              beachData.appendChild(favoriteButton);
+              //beachData.appendChild(favoriteButton);
               beachData.appendChild(p1);
               beachData.appendChild(meter);
               beachData.appendChild(p2);

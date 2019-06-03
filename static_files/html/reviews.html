@@ -38,9 +38,13 @@
 
         const database = firebase.database();
 
-        //display beach name at top of page
+        var favoriteButton = document.getElementById('favButton');
+        var clearStar;
+
+        //display beach name and favorite star at top of page
         database.ref('beach-coordinates/').once('value', (snapshot) => {
           const data = snapshot.val();
+          //console.log('beach coordinates data:', data);
           var beachName = Object.keys(data)[0];
           var title = document.getElementById('header');
           title.innerHTML = beachName;
@@ -50,6 +54,50 @@
           if (words.length > 1) {
             titleID = titleID.replace(/ /g, '');
           }
+
+          var newFavorites;
+          database.ref('currentUser/').once('value', (snapshot) => {
+            const userData = snapshot.val();
+            newFavorites = userData.favorites;
+            console.log(newFavorites);
+            //checks favorites list to determine which color star to display on load
+            if (!newFavorites.includes(beachName)) {
+              favoriteButton.src = "../images/star.png";
+              clearStar = true;
+            }
+            else {
+              favoriteButton.src = "../images/yellowstar.png";
+              clearStar = false;
+            }
+          });
+
+          favoriteButton.onclick = function() {
+            //adding the favorite
+            if (clearStar) {
+              newFavorites.push(beachName);
+              database.ref('currentUser/').update({
+                favorites: newFavorites
+              })
+              favoriteButton.src = "../images/yellowstar.png";
+              clearStar = false;
+              console.log('added favorite:', newFavorites);
+            }
+
+            //removing the favorite
+            else {
+              newFavorites = newFavorites.filter((keepBeach) => {
+                return keepBeach != beachName;
+              })
+              database.ref('currentUser/').update({
+                favorites: newFavorites
+              })
+              favoriteButton.src = "../images/star.png";
+              clearStar = true;
+              console.log('removed favorite:', newFavorites);
+            }
+          }
+
+
         });
 
         database.ref('currentUser/').on('value', (snapshot) => {
@@ -109,6 +157,22 @@
           console.log("review: "+review);
           database.ref('reviews/').push(review);
         });*/
+        $('#logoutButton').click(() => {
+          console.log('logout button clicked');
+          //update users database to match currentUser
+          database.ref('currentUser/').once('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              database.ref('users/' + data.username).update({
+              //database.ref('currentUser/').set({
+                email: data.email,
+                username: data.username,
+                password: data.password,
+                favorites: data.favorites
+              });
+            }
+          });
+        });
       });
 
       //display reviews
@@ -136,8 +200,13 @@
   </head>
 
   <div>
-    <p id="greeting"> </p>
+    <img id="favButton">
     <h1 id="header"></h1>
+    <div id="welcomeHeader">
+      <p id="welcome"> Welcome, </p>
+      <p id="greeting"></p> <br>
+      <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
+    </div>
 
     <h3>Write A Review</h3>
     <p>Thoughts? Write a review of the beach you visited below!</p>

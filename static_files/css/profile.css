@@ -135,3 +135,22 @@ img {
 #favButton {
   margin-bottom: -10px;
 }
+#welcomeHeader {
+  font-style: italic;
+  text-align: right;
+  margin-right: 25px;
+  margin-top: -65px;
+}
+#welcome {
+  display: inline-block;
+  text-align: right;
+  margin: 0;
+}
+#greeting {
+  display: inline-block;
+  text-align: left;
+  margin: 0;
+}
+#logoutButton {
+  align: right;
+}

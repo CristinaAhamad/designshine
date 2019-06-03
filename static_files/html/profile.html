@@ -41,6 +41,8 @@
           email = data.email;
           username = data.username;
           favorites = data.favorites;
+          var user = data.username;
+          document.getElementById('greeting').innerHTML = user;
           console.log('data:', data);
         });
 
@@ -95,11 +97,6 @@
                 favorites: data.favorites
               });
             }
-          });
-          //checking users database
-          database.ref('users/').on('value', (snapshot) => {
-            const data = snapshot.val();
-            console.log('users/:', data);
           });
         });
 
@@ -274,8 +271,12 @@
   <body>
     <div id="page-container">
       <div class="content-wrap">
-        <h1> Profile
-        <button id="logoutButton"> <a href="../index.html"> Logout</a></button> </h1>
+        <h1> Profile </h1>
+        <div id="welcomeHeader">
+          <p id="welcome"> Welcome, </p>
+          <p id="greeting"></p> <br>
+          <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
+        </div>
         <h3> Account </h3>
         <p id="name"></p>
         <p id="email"></p>

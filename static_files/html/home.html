@@ -65,6 +65,8 @@
       database.ref('currentUser/').on('value', (snapshot) => {
         const data = snapshot.val();
         newFavorites = data.favorites;
+        var user = data.username;
+        document.getElementById('greeting').innerHTML = user;
         console.log('newFavorites:', newFavorites);
       });
       /*database.ref('currentUser/').update({
@@ -274,6 +276,22 @@
           $('#reviews').html(html);
         });*/
 
+        $('#logoutButton').click(() => {
+          console.log('logout button clicked');
+          //update users database to match currentUser
+          database.ref('currentUser/').once('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+              database.ref('users/' + data.username).update({
+                email: data.email,
+                username: data.username,
+                password: data.password,
+                favorites: data.favorites
+              });
+            }
+          });
+        });
+
 
       $(document).ajaxError(() => {
         $('#searchOptions').html('Error: unknown ajaxError!');
@@ -352,6 +370,11 @@
         <div id="searchBar">
           <input id="searchBox" type="text" placeholder="Search Beaches...">
           <button id="goButton"> GO </button>
+        </div>
+        <div id="welcomeHeader">
+          <p id="welcome"> Welcome, </p>
+          <p id="greeting"></p> <br>
+          <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
         </div>
       </div>
 

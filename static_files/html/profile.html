@@ -20,6 +20,17 @@
     <script src="../jquery-3.3.1.min.js"></script>
 
     <script>
+    function setCoordinates(beachName, latitude, longitude) {
+      firebase.database().ref('beach-coordinates/').remove();
+      //get beach coordinates for google reviews
+      firebase.database().ref('beach-coordinates/' + beachName).set({
+        name: beachName,
+        latitude: latitude,
+        longitude: longitude
+      });
+      console.log('successfully set coordinates');
+    }
+
       //get profile info
       var email, username, favorites;
       $(document).ready(() => {
@@ -170,10 +181,10 @@
               var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
               p5.appendChild(wave);
 
-              var reviewlink = document.createElement('a');
+              /*var reviewlink = document.createElement('a');
               var linkText = document.createTextNode("Read reviews");
               reviewlink.appendChild(linkText);
-              reviewlink.href = "reviews.html";
+              reviewlink.href = "reviews.html";*/
               //document.getElementById('googleList').appendChild(reviewlink);
 
               var favoriteButton = document.createElement('img');
@@ -222,16 +233,14 @@
               const beachData = document.getElementById('content');
               h1.insertBefore(favoriteButton, name);
               beachData.appendChild(h1);
-              //beachData.appendChild(favoriteButton);
               beachData.appendChild(p1);
               beachData.appendChild(meter);
               beachData.appendChild(p2);
               beachData.appendChild(p3);
               beachData.appendChild(p4);
               beachData.appendChild(p5);
-              beachData.appendChild(reviewlink);
 
-              //setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
+              setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
               //getCoordinates();
             }
             request.send();
@@ -253,7 +262,7 @@
                 $('#content').empty();
               }
             }
-          });
+          }); //end .linkButton.click
           /*end popup*/
       }
       print();
@@ -281,6 +290,7 @@
         <div class="popup-content">
           <span class="close">&times;</span>
           <div id="content"></div>
+          <p> <a href="reviews.html" id="reviewLink"> See more reviews </a> </p>
         </div>
     </div>
 

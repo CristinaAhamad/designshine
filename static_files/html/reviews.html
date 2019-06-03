@@ -22,23 +22,105 @@
     <script src="../jquery-3.3.1.min.js"></script>
 
     <script type="text/javascript">
+      function getCoordinates() {
+        var coordinates = [];
+        const database = firebase.database();
+        let db = database.ref('beach-coordinates/').once('value', (snapshot) => {
+          const data = snapshot.val();
+          coordinates.push(Object.values(data)[0].latitude);
+          coordinates.push(Object.values(data)[0].longitude);
+        });
+      };
       //write reviews
       $(document).ready(() => {
-        let database = firebase.database();
+        getCoordinates();
+        var titleID;
+
+        const database = firebase.database();
+
+        //display beach name at top of page
+        database.ref('beach-coordinates/').once('value', (snapshot) => {
+          const data = snapshot.val();
+          var beachName = Object.keys(data)[0];
+          var title = document.getElementById('header');
+          title.innerHTML = beachName;
+
+          titleID = document.getElementById('header').innerHTML;
+          var words = titleID.split(' ').filter(function(v){return v!==''});
+          if (words.length > 1) {
+            titleID = titleID.replace(/ /g, '');
+          }
+        });
+
+        database.ref('currentUser/').on('value', (snapshot) => {
+          const data = snapshot.val();
+          var user = data.username;
+          document.getElementById('greeting').innerHTML = user;
+        });
+
         $('#submitButton').click(() => {
+          if (titleID && $('#reviewBox').val()) {
+            var review = {
+              username: document.getElementById('greeting').innerHTML,
+              review: $('#reviewBox').val()
+            }
+            database.ref('reviews/' + titleID).push(review);
+
+            database.ref('reviews/' + titleID).on('value', (snapshot) => {
+              const data = snapshot.val();
+              console.log('reviews/'+ titleID + ':' + data);
+            });
+          }
+          else {
+            console.log('submit error');
+          }
+        });
+
+        //display reviews
+        var html = '';
+        async function displayReviews() {
+          await new Promise(done => setTimeout(() => done(), 2000));
+
+          database.ref('reviews/' + titleID).on('value', (snapshot) => {
+            const data = snapshot.val();
+            console.log(data);
+            if (data) {
+              (Object.keys(data)).forEach(function(id) {
+                html += '<h5> Author: ';
+                html += data[id].username;
+                html += '</h5>';
+                html += '<p>';
+                html += data[id].review;
+                html += '</p>';
+                html += '<br><hr width="75%"/>';
+              });
+            }
+            else {
+              html += 'Be the first to review this beach!';
+            }
+            $('#reviews').html(html);
+          });
+        }
+        displayReviews();
+
+        //original database code
+        /*$('#submitButton').click(() => {
           const review = $('#reviewBox').val();
           console.log("review: "+review);
           database.ref('reviews/').push(review);
-        });
+        });*/
       });
 
       //display reviews
-      $(document).ready(() => {
+      /*$(document).ready(() => {
         var html = '';
         const database = firebase.database();
+        //original database code
+
         database.ref('reviews/').once('value', (snapshot) => {
           const data = snapshot.val();
           console.log('You received some data!', Object.keys(data));
+          console.log(data);
           //$('#reviews').html(<p> data[Object.keys(data)]</p>);
           (Object.keys(data)).forEach(function(id) {
             html += '<p>';
@@ -49,17 +131,17 @@
           $('#reviews').html(html);
         });
 
-      });
+      });*/
     </script>
-
   </head>
 
   <div>
-    <h2>Reviews</h2>
+    <p id="greeting"> </p>
+    <h1 id="header"></h1>
+
     <h3>Write A Review</h3>
     <p>Thoughts? Write a review of the beach you visited below!</p>
     <form>
-      <!--<input id="reviewBox" type="text" name="review"><br>-->
       <textarea id="reviewBox" type="text" name="review"></textarea>
     </form>
     <br>
@@ -90,7 +172,7 @@
           const data = snapshot.val();
           coordinates.push(Object.values(data)[0].latitude);
           coordinates.push(Object.values(data)[0].longitude);
-          console.log(coordinates);
+          //console.log('beach-coordinates/:', data);
         });
       });
 
@@ -98,7 +180,6 @@
 
       async function initMap() {
         await new Promise(done => setTimeout(() => done(), 2000));
-        console.log('coordinates:', coordinates[0], coordinates [1]);
 
         var beach = new google.maps.LatLng(coordinates[0], coordinates[1]);
 

@@ -151,18 +151,6 @@
             var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
             p5.appendChild(wave);
 
-            var reviewlink = document.createElement('a');
-            var linkText = document.createTextNode("See more reviews");
-            reviewlink.appendChild(linkText);
-            reviewlink.href = "reviews.html";
-            //document.getElementById('googleList').appendChild(reviewlink);
-
-            /*var favoriteButton = document.createElement('button');
-            var favString = 'Add to favorites';
-            var unfavString = 'Remove from favorites';
-            favoriteButton.textContent = favString;*/
-            //favoriteButton.innerHTML = '<img src="../../yellowstar.png" />';
-
             var favoriteButton = document.createElement('img');
             favoriteButton.setAttribute('id', 'favButton');
             var clearStar;
@@ -207,14 +195,44 @@
             const beachData = document.getElementById('content');
             h1.insertBefore(favoriteButton, name);
             beachData.appendChild(h1);
-            //beachData.appendChild(favoriteButton);
             beachData.appendChild(p1);
             beachData.appendChild(meter);
             beachData.appendChild(p2);
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
-            beachData.appendChild(reviewlink);
+
+            /*Reviews*/
+            var html = '';
+            async function displayReviews() {
+              await new Promise(done => setTimeout(() => done(), 2000));
+              var titleID = name.textContent;
+              console.log('titleID: ', titleID);
+              var words = titleID.split(' ').filter(function(v){return v!==''});
+              if (words.length > 1) {
+                titleID = titleID.replace(/ /g, '');
+              }
+              database.ref('reviews/' + titleID).on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log(data);
+                if (data) {
+                  (Object.keys(data)).forEach(function(id) {
+                    html += '<h5> Author: ';
+                    html += data[id].username;
+                    html += '</h5>';
+                    html += '<p>';
+                    html += data[id].review;
+                    html += '</p>';
+                    html += '<br><hr width="75%"/>';
+                  });
+                }
+                else {
+                  html += 'Be the first to review this beach!';
+                }
+                $('#reviews').html(html);
+              });
+            }
+            displayReviews();
 
             setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
             getCoordinates();
@@ -242,8 +260,7 @@
         });
         /*end popup*/
 
-        /*Reviews*/
-        var html = '';
+        /*var html = '';
         database.ref('reviews/').once('value', (snapshot) => {
           const data = snapshot.val();
           console.log('You received some data!', Object.keys(data));
@@ -255,7 +272,7 @@
             html += '<br><hr width="75%"/>';
           });
           $('#reviews').html(html);
-        });
+        });*/
 
 
       $(document).ajaxError(() => {
@@ -369,6 +386,7 @@
               <div id="googleReviews">
               </div>
               <div class="reviews" id="googleList"><ul class="review-list"></ul></div>
+              <p> <a href="reviews.html" id="reviewLink"> See more reviews </a> </p>
               <div id="map"></div>
 
             </div>
@@ -570,12 +588,6 @@
             var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
             p5.appendChild(wave);
 
-            var reviewlink = document.createElement('a');
-            var linkText = document.createTextNode("See more reviews");
-            reviewlink.appendChild(linkText);
-            reviewlink.href = "reviews.html";
-            document.getElementById('googleList').appendChild(reviewlink);
-
             var favoriteButton = document.createElement('img');
             favoriteButton.setAttribute('id', 'favButton');
             var clearStar;
@@ -627,7 +639,10 @@
             beachData.appendChild(p3);
             beachData.appendChild(p4);
             beachData.appendChild(p5);
-            //beachData.appendChild(reviewlink);
+
+            setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
+            getCoordinates();
+            getGoogleReviews();
           }
           request.send();
         });

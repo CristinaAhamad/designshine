@@ -269,7 +269,7 @@ popup and these will be saved to their profile if they have logged in. -->
               $('#content').empty();
             }
           }
-        });
+        }); //end of .linkButton click
         /*end popup*/
 
         /*var html = '';
@@ -320,14 +320,19 @@ popup and these will be saved to their profile if they have logged in. -->
 
           var beach = new google.maps.LatLng(coordinates[0], coordinates[1]);
 
-          coordinateMap = new google.maps.Map(document.getElementById("map"), {
+          /*coordinateMap = new google.maps.Map(document.getElementById("map"), {
+            center: beach,
+            zoom: 15
+          });*/
+          //coordinateMap = map;
+          map.setOptions({
             center: beach,
             zoom: 15
           });
 
           var request = {
             location: beach,
-            radius: "50",
+            radius: "20",
             query: 'beach'
           };
 
@@ -335,14 +340,16 @@ popup and these will be saved to their profile if they have logged in. -->
           service.textSearch(request, callback);
 
           function callback(results, status) {
+
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-              var marker = new google.maps.Marker({
+              /*var marker = new google.maps.Marker({
                 map: coordinateMap,
                 place: {
                   placeId: results[0].place_id,
                   location: results[0].geometry.location
-                }
-              });
+                },
+                //icon: {url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'}
+              });*/
               var place_id = results[0].place_id;
               var newRequest = {
                 placeId: results[0].place_id
@@ -350,7 +357,7 @@ popup and these will be saved to their profile if they have logged in. -->
 
               service.getDetails(newRequest, function(place, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
-
+                  $('.review-list').empty();
                   for (let review of place.reviews) {
                     let rating = document.querySelector('#rating');
                     let reviewEl = document.querySelector('.review-list');
@@ -392,7 +399,7 @@ popup and these will be saved to their profile if they have logged in. -->
       <div class="container">
         <!--MAP-->
         <div class="left">
-          <div id="map" style="height: 100%; width: 100%;"> </div> <br>
+          <div id="map" style="height: 70%; width: 100%;"> </div> <br>
         </div>
 
         <!--BEACH LIST-->
@@ -445,7 +452,7 @@ popup and these will be saved to their profile if they have logged in. -->
         //url: 'https://api.coastal.ca.gov/access/v1/locations',
         url: 'http://api.spitcast.com/api/spot/all',
         type: 'GET',
-        async: false,   //deprecated but at least it works now??
+        async: false,   //deprecated but still works
         success: (data) => {
           beachesAPI = data;
           console.log('successfully got data');
@@ -467,7 +474,8 @@ popup and these will be saved to their profile if they have logged in. -->
         //default centers map at mavericks beach in half moon bay
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 37.495799, lng: -122.496730},
-          zoom: 6
+          zoom: 6,
+          zoomControl: true
         });
         infoWindow = new google.maps.InfoWindow;
 

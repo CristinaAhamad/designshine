@@ -1,10 +1,15 @@
 <!DOCTYPE html>
+
+<!--This is where users can find and easily access their favorite beaches.
+By clicking on one of the listed beaches, they can view the current weather
+conditions, as well as remove the beach from their favorites.-->
+
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="../css/profile.css">
     <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
     <script>
-      // Your web app's Firebase configuration
+      // Firebase configuration
       var firebaseConfig = {
         apiKey: "AIzaSyCYfjxsTKKJXBflLGY25wU-9oB-srQTmAI",
         authDomain: "designshine-surfapp.firebaseapp.com",
@@ -35,13 +40,14 @@
       var email, username, favorites;
       $(document).ready(() => {
         const database = firebase.database();
-        //database.ref('users/').remove();
+        //gather user information in firebase
         let db = database.ref('currentUser/').on('value', (snapshot) => {
           const data = snapshot.val();
           email = data.email;
           username = data.username;
           favorites = data.favorites;
           var user = data.username;
+          //Welcome, user greeting in top right corner
           document.getElementById('greeting').innerHTML = user;
           console.log('data:', data);
         });
@@ -55,14 +61,20 @@
         var name = document.createTextNode('Username: ' + username);
         document.getElementById('name').appendChild(name);
 
+        //display email
+        var userEmail = document.createTextNode('Email: ' + email);
+        document.getElementById('email').appendChild(userEmail);
+
         //display favorites
         if (favorites.length===1){
+          //if no favorites have been saved
           $('#favorites').html('<p> You have no favorite beaches yet! </p>');
         }
         else {
           if (favorites.length > 1 && favorites[0]===""){
             favorites.shift();
           }
+          //create clickable link for favorited beach
           favorites.forEach((beachName) => {
             var beachID = beachName;
             var words = beachID.split(' ').filter(function(v){return v!==''});
@@ -83,6 +95,7 @@
           });
         }
 
+        //Log out of current user
         $('#logoutButton').click(() => {
           console.log('logout button clicked');
           //update users database to match currentUser
@@ -111,15 +124,19 @@
 
           var name = this.id;
           var spotNum;
+          //search through beach ids in firebase
           let db = database.ref('beach-ids/' + name).on('value',(snapshot) => {
             spotNum = snapshot.val();
+            //call api using beach id
             apiURL = 'http://api.spitcast.com/api/spot/forecast/' + spotNum;
 
             let request = new XMLHttpRequest();
+            //proxy server to bypass CORS error
             request.open('GET', ('https://cors-anywhere.herokuapp.com/'+ apiURL), true);
             request.responseType = 'text';
             request.onload = function () {
               var data = JSON.parse(this.responseText);
+              //get current date and time
               var today = new Date();
               var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
               var hour = today.getHours();
@@ -134,6 +151,7 @@
               var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
               p1.appendChild(shape);
 
+              //meter display for current overall conditions
               const meter = document.createElement('meter');
               meter.min = '0';
               meter.max = '5';
@@ -161,29 +179,27 @@
                 meter.value = '5';
               }
 
-
+              //current swell conditions
               const p2 = document.createElement('p');
               var swell = document.createTextNode("Swell: " + data[hour].shape_detail.swell);
               p2.appendChild(swell);
 
+              //current tide conditions
               const p3 = document.createElement('p');
               var tide = document.createTextNode("Tide: " + data[hour].shape_detail.tide);
               p3.appendChild(tide);
 
+              //current wind conditions
               const p4 = document.createElement('p');
               var wind = document.createTextNode("Wind: " + data[hour].shape_detail.wind);
               p4.appendChild(wind);
 
+              //current wave height
               const p5 = document.createElement('p');
               var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
               p5.appendChild(wave);
 
-              /*var reviewlink = document.createElement('a');
-              var linkText = document.createTextNode("Read reviews");
-              reviewlink.appendChild(linkText);
-              reviewlink.href = "reviews.html";*/
-              //document.getElementById('googleList').appendChild(reviewlink);
-
+              //button to select favorites
               var favoriteButton = document.createElement('img');
               favoriteButton.src = "../images/yellowstar.png";
               var clearStar = false;
@@ -227,6 +243,7 @@
                 }
               }
 
+              //append all html elements
               const beachData = document.getElementById('content');
               h1.insertBefore(favoriteButton, name);
               beachData.appendChild(h1);
@@ -271,31 +288,39 @@
   <body>
     <div id="page-container">
       <div class="content-wrap">
+        <!--title-->
         <h1> Profile </h1>
         <div id="welcomeHeader">
+          <!--Welcome greeting in top right corner -->
           <p id="welcome"> Welcome, </p>
           <p id="greeting"></p> <br>
+          <!--Log out button-->
           <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
         </div>
-        <h3> Account </h3>
+        <br>
+        <!--Displays account details: username and email-->
+        <h2> Account </h2>
         <p id="name"></p>
         <p id="email"></p>
-
+        <br>
+        <!--Displays user's favorited beaches-->
         <div class="favs">
-          <h3> Favorite Beaches </h3>
+          <h2> Favorite Beaches </h2>
           <div id="favorites"></div>
         </div>
       </div>
 
+      <!--Popup with beach information-->
       <div id="beachPopup" class="popup">
         <div class="popup-content">
           <span class="close">&times;</span>
           <div id="content"></div>
+          <!--Reviews for current beach-->
           <p> <a href="reviews.html" id="reviewLink"> See more reviews </a> </p>
         </div>
     </div>
 
-
+    <!--Link to home page and profiles page-->
       <footer id="footer">
         <div id="menu">
           <a href="home.html"> <img src="../images/home.png"> </a>

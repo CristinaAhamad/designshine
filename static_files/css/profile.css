@@ -162,3 +162,28 @@ img {
 #logoutButton {
   align: right;
 }
+.table, td {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+td {
+  padding: 0px;
+  width: 50%;
+  /*width: 50%;*/
+}
+.tbl-left {
+  text-align: right;
+}
+
+td img {
+  padding: 0px;
+  text-align: right;
+}
+tr {
+  line-height: 8px;
+}
+.tbl-right{
+  text-align: left;
+  font-size: 30;
+}

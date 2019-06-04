@@ -79,9 +79,6 @@ popup and these will be saved to their profile if they have logged in. -->
         document.getElementById('greeting').innerHTML = user;
         console.log('newFavorites:', newFavorites);
       });
-      /*database.ref('currentUser/').update({
-        favorites: ['']
-      });*/
 
 
       //append beach data
@@ -217,7 +214,7 @@ popup and these will be saved to their profile if they have logged in. -->
             /*Reviews*/
             var html = '';
             async function displayReviews() {
-              await new Promise(done => setTimeout(() => done(), 2000));
+              await new Promise(done => setTimeout(() => done(), 3000));
               var titleID = name.textContent;
               console.log('titleID: ', titleID);
               var words = titleID.split(' ').filter(function(v){return v!==''});
@@ -316,15 +313,10 @@ popup and these will be saved to their profile if they have logged in. -->
         async function getGoogleReviews() {
         //async function maps() {
           console.log('waiting..');
-          await new Promise(done => setTimeout(() => done(), 1000));
+          await new Promise(done => setTimeout(() => done(), 1500));
 
           var beach = new google.maps.LatLng(coordinates[0], coordinates[1]);
 
-          /*coordinateMap = new google.maps.Map(document.getElementById("map"), {
-            center: beach,
-            zoom: 15
-          });*/
-          //coordinateMap = map;
           map.setOptions({
             center: beach,
             zoom: 15
@@ -342,14 +334,6 @@ popup and these will be saved to their profile if they have logged in. -->
           function callback(results, status) {
 
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-              /*var marker = new google.maps.Marker({
-                map: coordinateMap,
-                place: {
-                  placeId: results[0].place_id,
-                  location: results[0].geometry.location
-                },
-                //icon: {url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'}
-              });*/
               var place_id = results[0].place_id;
               var newRequest = {
                 placeId: results[0].place_id
@@ -404,7 +388,6 @@ popup and these will be saved to their profile if they have logged in. -->
 
         <!--BEACH LIST-->
         <div class="right">
-          <!-- <h2> Beaches in La Jolla: </h2> -->
           <div id="nearbyBeaches">
             <div id="searchOptions"></div>
           </div>
@@ -452,7 +435,7 @@ popup and these will be saved to their profile if they have logged in. -->
         //url: 'https://api.coastal.ca.gov/access/v1/locations',
         url: 'http://api.spitcast.com/api/spot/all',
         type: 'GET',
-        async: false,   //deprecated but still works
+        async: false,
         success: (data) => {
           beachesAPI = data;
           console.log('successfully got data');
@@ -474,7 +457,7 @@ popup and these will be saved to their profile if they have logged in. -->
         //default centers map at mavericks beach in half moon bay
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 37.495799, lng: -122.496730},
-          zoom: 6,
+          zoom: 8,
           zoomControl: true
         });
         infoWindow = new google.maps.InfoWindow;
@@ -681,6 +664,37 @@ popup and these will be saved to their profile if they have logged in. -->
             beachData.appendChild(p4);
             beachData.appendChild(p5);
 
+            /*Reviews*/
+            var html = '';
+            async function displayReviews() {
+              await new Promise(done => setTimeout(() => done(), 3000));
+              var titleID = name.textContent;
+              console.log('titleID: ', titleID);
+              var words = titleID.split(' ').filter(function(v){return v!==''});
+              if (words.length > 1) {
+                titleID = titleID.replace(/ /g, '');
+              }
+              database.ref('reviews/' + titleID).on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log(data);
+                if (data) {
+                  (Object.keys(data)).forEach(function(id) {
+                    html += '<h5> Author: ';
+                    html += data[id].username;
+                    html += '</h5>';
+                    html += '<p>';
+                    html += data[id].review;
+                    html += '</p>';
+                    html += '<br><hr width="75%"/>';
+                  });
+                }
+                else {
+                  html += 'Be the first to review this beach!';
+                }
+                $('#reviews').html(html);
+              });
+            }
+            displayReviews();
             setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
             getCoordinates();
             getGoogleReviews();
@@ -718,8 +732,6 @@ popup and these will be saved to their profile if they have logged in. -->
 
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
-    <!--a href="http://magicseaweed.com"><img src="https://im-1-uk.msw.ms/msw_powered_by.png"></a-->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </body>

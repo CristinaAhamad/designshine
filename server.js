@@ -1,3 +1,6 @@
+/* Node.js + Express server backend for Tidekick. To start the server, run node server.js, 
+and open the webpage at http://localhost:3000/ */
+
 const express = require('express');
 const app = express();
 

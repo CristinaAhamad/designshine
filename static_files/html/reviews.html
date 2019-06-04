@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+This page displays all the reviews for a specific beach.
+Users can submit their own review, which will then be added under the ‘Reviews’
+section along with any other reviews from our database. Underneath the user-submitted
+reviews are reviews from Google for the same beach and an average Google
+rating out of five stars, each accessed through the Google Maps API. Users also have
+the option of adding or removing the beach from their favorites list.
+-->
 <html>
   <head>
     <link rel="stylesheet" href="../css/reviews.css">
@@ -22,18 +30,8 @@
     <script src="../jquery-3.3.1.min.js"></script>
 
     <script type="text/javascript">
-      function getCoordinates() {
-        var coordinates = [];
-        const database = firebase.database();
-        let db = database.ref('beach-coordinates/').once('value', (snapshot) => {
-          const data = snapshot.val();
-          coordinates.push(Object.values(data)[0].latitude);
-          coordinates.push(Object.values(data)[0].longitude);
-        });
-      };
-      //write reviews
+
       $(document).ready(() => {
-        getCoordinates();
         var titleID;
 
         const database = firebase.database();
@@ -44,7 +42,7 @@
         //display beach name and favorite star at top of page
         database.ref('beach-coordinates/').once('value', (snapshot) => {
           const data = snapshot.val();
-          //console.log('beach coordinates data:', data);
+
           var beachName = Object.keys(data)[0];
           var title = document.getElementById('header');
           title.innerHTML = beachName;
@@ -55,12 +53,13 @@
             titleID = titleID.replace(/ /g, '');
           }
 
+          //checks user's favorites list to determine which color star to display on load
           var newFavorites;
           database.ref('currentUser/').once('value', (snapshot) => {
             const userData = snapshot.val();
             newFavorites = userData.favorites;
             console.log(newFavorites);
-            //checks favorites list to determine which color star to display on load
+
             if (!newFavorites.includes(beachName)) {
               favoriteButton.src = "../images/star.png";
               clearStar = true;
@@ -72,7 +71,7 @@
           });
 
           favoriteButton.onclick = function() {
-            //adding the favorite
+            //add the beach to user's favorites if the beach isn't already in their favorites list
             if (clearStar) {
               newFavorites.push(beachName);
               database.ref('currentUser/').update({
@@ -83,7 +82,7 @@
               console.log('added favorite:', newFavorites);
             }
 
-            //removing the favorite
+            //remove the beach from the user's favorites if the beach was in their favorites list
             else {
               newFavorites = newFavorites.filter((keepBeach) => {
                 return keepBeach != beachName;
@@ -96,8 +95,6 @@
               console.log('removed favorite:', newFavorites);
             }
           }
-
-
         });
 
         database.ref('currentUser/').on('value', (snapshot) => {
@@ -106,6 +103,7 @@
           document.getElementById('greeting').innerHTML = user;
         });
 
+        //stores user-submitted review in Firebase
         $('#submitButton').click(() => {
           if (titleID && $('#reviewBox').val()) {
             var review = {
@@ -124,7 +122,7 @@
           }
         });
 
-        //display reviews
+        //display user-submitted reviews
         var html = '';
         async function displayReviews() {
           await new Promise(done => setTimeout(() => done(), 2000));
@@ -151,20 +149,12 @@
         }
         displayReviews();
 
-        //original database code
-        /*$('#submitButton').click(() => {
-          const review = $('#reviewBox').val();
-          console.log("review: "+review);
-          database.ref('reviews/').push(review);
-        });*/
+        //update users database to match current user information when they log out
         $('#logoutButton').click(() => {
-          console.log('logout button clicked');
-          //update users database to match currentUser
           database.ref('currentUser/').once('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
               database.ref('users/' + data.username).update({
-              //database.ref('currentUser/').set({
                 email: data.email,
                 username: data.username,
                 password: data.password,
@@ -174,28 +164,6 @@
           });
         });
       });
-
-      //display reviews
-      /*$(document).ready(() => {
-        var html = '';
-        const database = firebase.database();
-        //original database code
-
-        database.ref('reviews/').once('value', (snapshot) => {
-          const data = snapshot.val();
-          console.log('You received some data!', Object.keys(data));
-          console.log(data);
-          //$('#reviews').html(<p> data[Object.keys(data)]</p>);
-          (Object.keys(data)).forEach(function(id) {
-            html += '<p>';
-            html += data[id];
-            html += '</p>';
-            html += '<br><hr width="75%"/>';
-          });
-          $('#reviews').html(html);
-        });
-
-      });*/
     </script>
   </head>
 
@@ -233,7 +201,7 @@
     <div id="map"></div>
 
     <script>
-      //get google reviews
+      //get Google reviews and ratings
       var coordinates = [];
       $(document).ready(() => {
         const database = firebase.database();
@@ -241,22 +209,19 @@
           const data = snapshot.val();
           coordinates.push(Object.values(data)[0].latitude);
           coordinates.push(Object.values(data)[0].longitude);
-          //console.log('beach-coordinates/:', data);
         });
       });
 
+      //creates hidden map in order to access Google reviews for the beach based on coordinates
       var map, service;
-
       async function initMap() {
         await new Promise(done => setTimeout(() => done(), 2000));
 
         var beach = new google.maps.LatLng(coordinates[0], coordinates[1]);
-
         map = new google.maps.Map(document.getElementById("map"), {
           center: beach,
           zoom: 15
         });
-
         var request = {
           location: beach,
           radius: "50",
@@ -266,15 +231,9 @@
         service = new google.maps.places.PlacesService(map);
         service.textSearch(request, callback);
 
+        //display the Google reviews and ratings of the beach
         function callback(results, status) {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
-            var marker = new google.maps.Marker({
-              map: map,
-              place: {
-                placeId: results[0].place_id,
-                location: results[0].geometry.location
-              }
-            });
             var place_id = results[0].place_id;
             console.log('place id:', results[0].place_id);
             var newRequest = {
@@ -290,10 +249,6 @@
 
                   rating.innerHTML = place.rating;
                   let rev = document.createElement('div');
-                  /*rev.innerHTML = `<div>Author: ${review.author_name}</div>
-                                  <p>${review.text}</p>
-                                  <div>Rating: ${review.rating} star(s)</div>
-                                  <br><hr width="75%"/><br>`;*/
                   rev.innerHTML = `<p>${review.text}</p>
                                   <div>Rating: ${review.rating} star(s)</div>
                                   <br><hr width="75%"/><br>`;
@@ -306,7 +261,6 @@
       }
     </script>
 
-    <!--button> <a href="home.html"> Back </a> </button-->
     <br><br><br><br><br><br><br><br>
 
     <!-- google reviews api -->

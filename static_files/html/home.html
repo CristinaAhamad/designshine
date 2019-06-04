@@ -143,22 +143,109 @@ popup and these will be saved to their profile if they have logged in. -->
               meter.value = '5';
             }
 
+            let table = document.createElement('table');
+            table.setAttribute("class", "table");
+
+            //SWELL
+            let row1 = document.createElement('tr');
+              let td1_left = document.createElement('td');
+              td1_left.setAttribute("class", "tbl-left");
+              let td1_right = document.createElement('td');
+              td1_right.setAttribute("class", "tbl-right");
+            let f1 = document.createElement('figure');
+            let i1 = document.createElement('img');
+            i1.setAttribute("src", "../images/icon_swell.png");
+            i1.setAttribute("width", "35");
+            i1.setAttribute("height", "35");
+            let c1 = document.createElement('figcaption');
+            var cap = document.createTextNode("swell");
+            c1.appendChild(cap);
+            f1.appendChild(i1);
+            f1.appendChild(c1);
+            td1_left.appendChild(f1);
 
             const p2 = document.createElement('p');
-            var swell = document.createTextNode("Swell: " + data[hour].shape_detail.swell);
-            p2.appendChild(swell);
+            var swell = document.createTextNode(data[hour].shape_detail.swell);
+            td1_right.style.fontSize = "20px";
+            td1_right.appendChild(swell);
+            row1.appendChild(td1_left);
+            row1.appendChild(td1_right);
+            table.appendChild(row1);
 
+            //TIDE
+            let row2 = document.createElement('tr');
+              let td2_left = document.createElement('td');
+              td2_left.setAttribute("class", "tbl-left");
+              let td2_right = document.createElement('td');
+              td2_right.setAttribute("class", "tbl-right");
+            let f2 = document.createElement('figure');
+            let i2 = document.createElement('img');
+            i2.setAttribute("src", "../images/icon_tide.png");
+            i2.setAttribute("width", "35");
+            i2.setAttribute("height", "35");
+            let c2 = document.createElement('figcaption');
+            var cap2 = document.createTextNode("tide");
+            c2.appendChild(cap2);
+            f2.appendChild(i2);
+            f2.appendChild(c2);
+            td2_left.appendChild(f2);
             const p3 = document.createElement('p');
-            var tide = document.createTextNode("Tide: " + data[hour].shape_detail.tide);
-            p3.appendChild(tide);
+            var tide = document.createTextNode(data[hour].shape_detail.tide);
+            td2_right.style.fontSize = "20px";
+            td2_right.appendChild(tide);
+            row2.appendChild(td2_left);
+            row2.appendChild(td2_right);
+            table.appendChild(row2);
 
-            const p4 = document.createElement('p');
-            var wind = document.createTextNode("Wind: " + data[hour].shape_detail.wind);
-            p4.appendChild(wind);
+            //WIND
+            let row3 = document.createElement('tr');
+              let td3_left = document.createElement('td');
+              td3_left.setAttribute("class", "tbl-left");
+              let td3_right = document.createElement('td');
+              td3_right.setAttribute("class", "tbl-right");
+            let f3 = document.createElement('figure');
+            let i3 = document.createElement('img');
+            i3.setAttribute("src", "../images/icon_wind.png");
+            i3.setAttribute("width", "35");
+            i3.setAttribute("height", "35");
+            let c3 = document.createElement('figcaption');
+            var cap3 = document.createTextNode("wind");
+            c3.appendChild(cap3);
+            f3.appendChild(i3);
+            f3.appendChild(c3);
+            td3_left.appendChild(f3);
+            //const p4 = document.createElement('p');
+            var wind = document.createTextNode(data[hour].shape_detail.wind);
+            td3_right.style.fontSize = "20px";
+            td3_right.appendChild(wind);
+            row3.appendChild(td3_left);
+            row3.appendChild(td3_right);
+            table.appendChild(row3);
 
-            const p5 = document.createElement('p');
-            var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
-            p5.appendChild(wave);
+            //WAVE HEIGHT
+            let row4 = document.createElement('tr');
+              let td4_left = document.createElement('td');
+              td4_left.setAttribute("class", "tbl-left");
+              let td4_right = document.createElement('td');
+              td4_right.setAttribute("class", "tbl-right");
+            let f4 = document.createElement('figure');
+            let i4 = document.createElement('img');
+            i4.setAttribute("src", "../images/icon_height.png");
+            i4.setAttribute("width", "35");
+            i4.setAttribute("height", "35");
+            let c4 = document.createElement('figcaption');
+            var cap4 = document.createTextNode("height");
+            c4.appendChild(cap4);
+            f4.appendChild(i4);
+            f4.appendChild(c4);
+            td4_left.appendChild(f4);
+            //const p5 = document.createElement('p');
+            var wave = document.createTextNode(data[hour].size + "ft.");
+            td4_right.style.fontSize = "20px";
+            td4_right.appendChild(wave);
+            row4.appendChild(td4_left);
+            row4.appendChild(td4_right);
+            table.appendChild(row4);
 
             var favoriteButton = document.createElement('img');
             favoriteButton.setAttribute('id', 'favButton');
@@ -206,9 +293,11 @@ popup and these will be saved to their profile if they have logged in. -->
             beachData.appendChild(h1);
             beachData.appendChild(p1);
             beachData.appendChild(meter);
-            beachData.appendChild(p2);
-            beachData.appendChild(p3);
-            beachData.appendChild(p4);
+            //beachData.appendChild(f1);
+            //beachData.appendChild(p2);
+            beachData.appendChild(table);
+            //beachData.appendChild(p3);
+            //beachData.appendChild(p4);
             beachData.appendChild(p5);
 
             /*Reviews*/

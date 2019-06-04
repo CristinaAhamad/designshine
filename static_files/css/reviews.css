@@ -1,3 +1,7 @@
+/*Styling and structure for the reviews page, first displaying an area for
+users to write their own review, then showing other user-submitted reviews,
+and finally displaying Google reviews. */
+
 /*FONT IMPORT*/
 @font-face {
   font-family: 'Montserrat';

@@ -25,6 +25,7 @@
 
 body {
   margin: 0; !important
+  height: 100%;
 }
 
 
@@ -34,12 +35,16 @@ h1, h2, input, button {
 
 img {
   width: 100%;
-  float: left;
+  /*float: left;*/
 }
 
+.loginphoto img {
+  float: left;
+}
 .loginphoto{
   width: 50%;
   float: left;
+  overflow: hidden;
 }
 
 .logininfo{
@@ -50,4 +55,8 @@ img {
   text-align: center;
   width: 50%;
   float: left;
+}
+
+#logo {
+  width: 125px;
 }

@@ -56,6 +56,7 @@ body {
 #title {
   text-align: center;
   display: block;
+  padding-top: 12px;
   margin-bottom: 5px;
 }
 #list {
@@ -185,6 +186,8 @@ img {
   position: relative;
   z-index: 10;
   height: 100px;
+  top: 0px;
+  padding: 0px;
 }
 
 .container {
@@ -211,7 +214,6 @@ img {
   width: 50%;
   padding: 0;
   background-color: indigo;
-  /*background-color: #e3f2fd;*/
 }
 
 .right {
@@ -228,7 +230,7 @@ img {
   font-style: italic;
   text-align: right;
   margin-right: 25px;
-  margin-top: -75px;
+  margin-top: -60px;
 }
 #welcome {
   display: inline-block;
@@ -242,4 +244,25 @@ img {
 }
 #logoutButton {
   align: right;
+}
+
+
+.content {
+  margin-top: -21px;
+  padding: 0px;
+  top: 0px;
+}
+
+.logo {
+  margin-left: 0;
+}
+
+#logo {
+  max-height: 100px;
+  margin-left: 0;
+  padding: 0;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  display: inline-block;
 }

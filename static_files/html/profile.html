@@ -149,6 +149,7 @@ conditions, as well as remove the beach from their favorites.-->
 
               const p1 = document.createElement('p');
               var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
+              td1_right.style.fontSize = "20px";
               p1.appendChild(shape);
 
               //meter display for current overall conditions
@@ -179,86 +180,196 @@ conditions, as well as remove the beach from their favorites.-->
                 meter.value = '5';
               }
 
-              //current swell conditions
-              const p2 = document.createElement('p');
-              var swell = document.createTextNode("Swell: " + data[hour].shape_detail.swell);
-              p2.appendChild(swell);
+              let table = document.createElement('table');
+            table.setAttribute("class", "table");
 
-              //current tide conditions
-              const p3 = document.createElement('p');
-              var tide = document.createTextNode("Tide: " + data[hour].shape_detail.tide);
-              p3.appendChild(tide);
+            //SWELL
+            let row1 = document.createElement('tr');
+              let td1_left = document.createElement('td');
+              td1_left.setAttribute("class", "tbl-left");
+              let td1_right = document.createElement('td');
+              td1_right.setAttribute("class", "tbl-right");
+            let f1 = document.createElement('figure');
+            let i1 = document.createElement('img');
+            i1.setAttribute("src", "../images/icon_swell.png");
+            i1.setAttribute("width", "35");
+            i1.setAttribute("height", "35");
+            let c1 = document.createElement('figcaption');
+            var cap = document.createTextNode("swell");
+            c1.appendChild(cap);
+            f1.appendChild(i1);
+            f1.appendChild(c1);
+            td1_left.appendChild(f1);
 
-              //current wind conditions
-              const p4 = document.createElement('p');
-              var wind = document.createTextNode("Wind: " + data[hour].shape_detail.wind);
-              p4.appendChild(wind);
+            const p2 = document.createElement('p');
+            var swell = document.createTextNode(data[hour].shape_detail.swell);
+            td1_right.style.fontSize = "20px";
+            td1_right.appendChild(swell);
+            row1.appendChild(td1_left);
+            row1.appendChild(td1_right);
+            table.appendChild(row1);
 
-              //current wave height
-              const p5 = document.createElement('p');
-              var wave = document.createTextNode("Wave size: " + data[hour].size + "ft.");
-              p5.appendChild(wave);
+            //TIDE
+            let row2 = document.createElement('tr');
+              let td2_left = document.createElement('td');
+              td2_left.setAttribute("class", "tbl-left");
+              let td2_right = document.createElement('td');
+              td2_right.setAttribute("class", "tbl-right");
+            let f2 = document.createElement('figure');
+            let i2 = document.createElement('img');
+            i2.setAttribute("src", "../images/icon_tide.png");
+            i2.setAttribute("width", "35");
+            i2.setAttribute("height", "35");
+            let c2 = document.createElement('figcaption');
+            var cap2 = document.createTextNode("tide");
+            c2.appendChild(cap2);
+            f2.appendChild(i2);
+            f2.appendChild(c2);
+            td2_left.appendChild(f2);
+            const p3 = document.createElement('p');
+            var tide = document.createTextNode(data[hour].shape_detail.tide);
+            td2_right.style.fontSize = "20px";
+            td2_right.appendChild(tide);
+            row2.appendChild(td2_left);
+            row2.appendChild(td2_right);
+            table.appendChild(row2);
 
-              //button to select favorites
-              var favoriteButton = document.createElement('img');
+            //WIND
+            let row3 = document.createElement('tr');
+              let td3_left = document.createElement('td');
+              td3_left.setAttribute("class", "tbl-left");
+              let td3_right = document.createElement('td');
+              td3_right.setAttribute("class", "tbl-right");
+            let f3 = document.createElement('figure');
+            let i3 = document.createElement('img');
+            i3.setAttribute("src", "../images/icon_wind.png");
+            i3.setAttribute("width", "35");
+            i3.setAttribute("height", "35");
+            let c3 = document.createElement('figcaption');
+            var cap3 = document.createTextNode("wind");
+            c3.appendChild(cap3);
+            f3.appendChild(i3);
+            f3.appendChild(c3);
+            td3_left.appendChild(f3);
+            //const p4 = document.createElement('p');
+            var wind = document.createTextNode(data[hour].shape_detail.wind);
+            td3_right.style.fontSize = "20px";
+            td3_right.appendChild(wind);
+            row3.appendChild(td3_left);
+            row3.appendChild(td3_right);
+            table.appendChild(row3);
+
+            //WAVE HEIGHT
+            let row4 = document.createElement('tr');
+              let td4_left = document.createElement('td');
+              td4_left.setAttribute("class", "tbl-left");
+              let td4_right = document.createElement('td');
+              td4_right.setAttribute("class", "tbl-right");
+            let f4 = document.createElement('figure');
+            let i4 = document.createElement('img');
+            i4.setAttribute("src", "../images/icon_height.png");
+            i4.setAttribute("width", "35");
+            i4.setAttribute("height", "35");
+            let c4 = document.createElement('figcaption');
+            var cap4 = document.createTextNode("height");
+            c4.appendChild(cap4);
+            f4.appendChild(i4);
+            f4.appendChild(c4);
+            td4_left.appendChild(f4);
+            var wave = document.createTextNode(data[hour].size + "ft.");
+            td4_right.style.fontSize = "20px";
+            td4_right.appendChild(wave);
+            row4.appendChild(td4_left);
+            row4.appendChild(td4_right);
+            table.appendChild(row4);
+
+            var favoriteButton = document.createElement('img');
+            favoriteButton.setAttribute('id', 'favButton');
+            var clearStar;
+
+            console.log('contains ' + data[hour].spot_name + ': ' + newFavorites.includes(data[hour].spot_name));
+            //checks favorites list to determine which color star to display on load
+            if (!newFavorites.includes(data[hour].spot_name)) {
+              favoriteButton.src = "../images/star.png";
+              clearStar = true;
+            }
+            else {
               favoriteButton.src = "../images/yellowstar.png";
-              var clearStar = false;
-              favoriteButton.setAttribute('id', 'favButton');
+              clearStar = false;
+            }
 
-              //getting favorites from user's account
-              var newFavorites;
-              database.ref('currentUser/').once('value', (snapshot) => {
-                const data = snapshot.val();
-                newFavorites = data.favorites;
-              });
-
-              favoriteButton.onclick = function() {
-                database.ref('currentUser/').once('value', (snapshot) => {
-                  const data = snapshot.val();
-                });
-
-                //adding the favorite
-                console.log('textContent: ', favoriteButton.textContent);
-                if (clearStar) {
-                  newFavorites.push(data[hour].spot_name);
-                  database.ref('currentUser/').update({
-                    favorites: newFavorites
-                  })
-                  favoriteButton.src = "../images/yellowstar.png";
-                  clearStar = false;
-                  console.log('added favorite:', newFavorites);
-                }
-
-                //removing the favorite
-                else {
-                  newFavorites = newFavorites.filter((keepBeach) => {
-                    return keepBeach != data[hour].spot_name;
-                  })
-                  database.ref('currentUser/').update({
-                    favorites: newFavorites
-                  })
-                  favoriteButton.src = "../images/star.png";
-                  clearStar = true;
-                  console.log('removed favorite:', newFavorites);
-                }
+            favoriteButton.onclick = function() {
+              //adding the favorite
+              if (clearStar) {
+                newFavorites.push(data[hour].spot_name);
+                database.ref('currentUser/').update({
+                  favorites: newFavorites
+                })
+                favoriteButton.src = "../images/yellowstar.png";
+                clearStar = false;
+                console.log('added favorite:', newFavorites);
               }
 
-              //append all html elements
-              const beachData = document.getElementById('content');
-              h1.insertBefore(favoriteButton, name);
-              beachData.appendChild(h1);
-              beachData.appendChild(p1);
-              beachData.appendChild(meter);
-              beachData.appendChild(p2);
-              beachData.appendChild(p3);
-              beachData.appendChild(p4);
-              beachData.appendChild(p5);
-
-              setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
-              //getCoordinates();
+              //removing the favorite
+              else {
+                newFavorites = newFavorites.filter((keepBeach) => {
+                  return keepBeach != data[hour].spot_name;
+                })
+                database.ref('currentUser/').update({
+                  favorites: newFavorites
+                })
+                favoriteButton.src = "../images/star.png";
+                clearStar = true;
+                console.log('removed favorite:', newFavorites);
+              }
             }
-            request.send();
-          });
+
+            const beachData = document.getElementById('content');
+            h1.insertBefore(favoriteButton, name);
+            beachData.appendChild(h1);
+            beachData.appendChild(p1);
+            beachData.appendChild(meter);
+            beachData.appendChild(table);
+
+
+            /*Reviews*/
+            var html = '';
+            async function displayReviews() {
+              await new Promise(done => setTimeout(() => done(), 3000));
+              var titleID = name.textContent;
+              console.log('titleID: ', titleID);
+              var words = titleID.split(' ').filter(function(v){return v!==''});
+              if (words.length > 1) {
+                titleID = titleID.replace(/ /g, '');
+              }
+              database.ref('reviews/' + titleID).on('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log(data);
+                if (data) {
+                  (Object.keys(data)).forEach(function(id) {
+                    html += '<h5> Author: ';
+                    html += data[id].username;
+                    html += '</h5>';
+                    html += '<p>';
+                    html += data[id].review;
+                    html += '</p>';
+                    html += '<br><hr width="75%"/>';
+                  });
+                }
+                else {
+                  html += 'Be the first to review this beach!';
+                }
+                $('#reviews').html(html);
+              });
+            }
+            displayReviews();
+
+            setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
+            getCoordinates();
+            getGoogleReviews();
+          }
+          request.send();
+        });
 
             popup.style.display = "block";
 

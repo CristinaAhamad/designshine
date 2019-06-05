@@ -52,7 +52,7 @@ popup and these will be saved to their profile if they have logged in. -->
       });
     };
 
-
+    //Search function
     $(document).ready(() => {
        var search = $("#searchBox");
        var items  = $(".card");
@@ -65,12 +65,14 @@ popup and these will be saved to their profile if they have logged in. -->
         });
       });
 
+      //Get users from firebase
       const database = firebase.database();
       database.ref('users/').on('value', (snapshot) => {
         const data = snapshot.val();
         console.log('users/:', data);
       });
 
+      //get current users' favorites
       var newFavorites = [];
       database.ref('currentUser/').on('value', (snapshot) => {
         const data = snapshot.val();
@@ -79,7 +81,6 @@ popup and these will be saved to their profile if they have logged in. -->
         document.getElementById('greeting').innerHTML = user;
         console.log('newFavorites:', newFavorites);
       });
-
 
       //append beach data
       $(".linkButton").on('click', function(event){
@@ -92,20 +93,24 @@ popup and these will be saved to their profile if they have logged in. -->
 
         var name = this.id;
         var spotNum;
+        //search through beach ids in firebase
         let db = database.ref('beach-ids/' + name).on('value',(snapshot) => {
           spotNum = snapshot.val();
           console.log("spot id: " + spotNum);
+          //call api using beach id
           apiURL = 'http://api.spitcast.com/api/spot/forecast/' + spotNum;
 
           let request = new XMLHttpRequest();
+          //proxy server to bypass CORS error
           request.open('GET', ('https://cors-anywhere.herokuapp.com/'+ apiURL), true);
           request.responseType = 'text';
           request.onload = function () {
             var data = JSON.parse(this.responseText);
+            //get current date and time
             var today = new Date();
             var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
             var hour = today.getHours();
-            console.log("date: " + date + " & hour: " + hour);
+
             currCond = data[hour].shape_full;
 
             const h1 = document.createElement('h1');
@@ -114,8 +119,10 @@ popup and these will be saved to their profile if they have logged in. -->
 
             const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
+            td1_right.style.fontSize = "20px";
             p1.appendChild(shape);
 
+            //meter display for current overall conditions
             const meter = document.createElement('meter');
             meter.min = '0';
             meter.max = '5';
@@ -353,20 +360,7 @@ popup and these will be saved to their profile if they have logged in. -->
         }); //end of .linkButton click
         /*end popup*/
 
-        /*var html = '';
-        database.ref('reviews/').once('value', (snapshot) => {
-          const data = snapshot.val();
-          console.log('You received some data!', Object.keys(data));
-          //$('#reviews').html(<p> data[Object.keys(data)]</p>);
-          (Object.keys(data)).forEach(function(id) {
-            html += '<p>';
-            html += data[id];
-            html += '</p>';
-            html += '<br><hr width="75%"/>';
-          });
-          $('#reviews').html(html);
-        });*/
-
+        //log out of current user
         $('#logoutButton').click(() => {
           console.log('logout button clicked');
           //update users database to match currentUser

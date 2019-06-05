@@ -181,6 +181,7 @@ conditions, as well as remove the beach from their favorites.-->
               }
 
               let table = document.createElement('table');
+
             table.setAttribute("class", "table");
 
             //SWELL
@@ -359,8 +360,27 @@ conditions, as well as remove the beach from their favorites.-->
                 else {
                   html += 'Be the first to review this beach!';
                 }
+<<<<<<< HEAD
                 $('#reviews').html(html);
               });
+=======
+              }
+
+              //append all html elements
+              const beachData = document.getElementById('content');
+              h1.insertBefore(favoriteButton, name);
+              beachData.appendChild(h1);
+              beachData.appendChild(p1);
+              beachData.appendChild(meter);
+              beachData.appendChild(table);
+              //beachData.appendChild(p2);
+              //beachData.appendChild(p3);
+              //beachData.appendChild(p4);
+              //beachData.appendChild(p5);
+
+              setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
+              //getCoordinates();
+>>>>>>> e41f99432a474778f7a13a677fa97b1ce659d63d
             }
             displayReviews();
 

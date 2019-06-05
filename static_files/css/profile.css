@@ -87,7 +87,9 @@ img {
 }
 
 .linkButton:hover {
-  background-color: lightblue;
+  /*background-color: lightblue;*/
+  font-weight: bold;
+  color: #2172A2;
 }
 
 .mapButton:hover {
@@ -115,6 +117,8 @@ img {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  top: -75px;
+  padding-bottom: 90px;
 }
 
 .popup-content {
@@ -190,4 +194,9 @@ tr {
 .tbl-right{
   text-align: left;
   font-size: 30;
+}
+#stars {
+  width: 25px;
+  height: 25px;
+  margin-bottom: -3px;
 }

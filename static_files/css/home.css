@@ -247,6 +247,8 @@ img {
 }
 #logoutButton {
   align: right;
+  font-family: 'Montserrat';
+  font-style: normal;
 }
 .table, td {
   margin-left: auto;

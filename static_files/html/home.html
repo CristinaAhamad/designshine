@@ -119,7 +119,7 @@ popup and these will be saved to their profile if they have logged in. -->
 
             const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
-            td1_right.style.fontSize = "20px";
+            //td1_right.style.fontSize = "20px";
             p1.appendChild(shape);
 
             //meter display for current overall conditions
@@ -456,7 +456,7 @@ popup and these will be saved to their profile if they have logged in. -->
           <div id="welcomeHeader">
             <p id="welcome"> Welcome, </p>
             <p id="greeting"></p> <br>
-            <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
+            <a href="../index.html" id="logoutButton"> Log out </a>
           </div>
         </div>
       </div>
@@ -652,7 +652,7 @@ popup and these will be saved to their profile if they have logged in. -->
 
             const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
-            td1_right.style.fontSize = "20px";
+            //td1_right.style.fontSize = "20px";
             p1.appendChild(shape);
 
             //meter display for current overall conditions

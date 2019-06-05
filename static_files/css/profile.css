@@ -31,6 +31,8 @@ body {
   margin-bottom: 50px;
   background-color: #f7f9fc;
   margin: 0;
+  font-family: 'Montserrat';
+  font-style: normal;
 }
 
 #page-container{
@@ -161,6 +163,8 @@ img {
 }
 #logoutButton {
   align: right;
+  font-family: 'Montserrat';
+  font-style: normal;
 }
 .table, td {
   margin-left: auto;

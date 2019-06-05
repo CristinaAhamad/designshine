@@ -25,9 +25,10 @@
 }
 
 body {
-  margin: 0; !important
+  margin: 0 !important;
   height: 100%;
-  overflow: hidden
+  background-color: #f7f9fc;
+  overflow: hidden;
 }
 
 
@@ -38,7 +39,7 @@ h1, h2, input, button {
 img {
   width: 100%;
   padding-top: -20px;
-  overflow: hidden
+  overflow: hidden;
   /*float: left;*/
 }
 
@@ -53,8 +54,8 @@ img {
 }
 
 .logininfo{
-  padding-bottom: 55%;
-  background-color: #f7f9fc;
+  /*padding-bottom: 55%;
+  background-color: #f7f9fc;*/
   padding-top: 10px;
   float: left;
   text-align: center;

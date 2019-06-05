@@ -30,6 +30,7 @@ popup and these will be saved to their profile if they have logged in. -->
     </script>
 
     <script type="text/javascript">
+    //get coordinates of a beach to use for Google reviews
     function setCoordinates(beachName, latitude, longitude) {
       firebase.database().ref('beach-coordinates/').remove();
       //get beach coordinates for google reviews
@@ -82,7 +83,7 @@ popup and these will be saved to their profile if they have logged in. -->
         console.log('newFavorites:', newFavorites);
       });
 
-      //append beach data
+      //display the current weather conditions and reviews for a given beach
       $(".linkButton").on('click', function(event){
         console.log("clicked");
         document.getElementsByClassName('top')[0].style.zIndex = '0';
@@ -119,7 +120,7 @@ popup and these will be saved to their profile if they have logged in. -->
 
             const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
-            td1_right.style.fontSize = "20px";
+            //td1_right.style.fontSize = "20px";
             p1.appendChild(shape);
 
             //meter display for current overall conditions
@@ -269,7 +270,7 @@ popup and these will be saved to their profile if they have logged in. -->
             }
 
             favoriteButton.onclick = function() {
-              //adding the favorite
+              //adds the favorite if it wasn't already in the user's favorites list
               if (clearStar) {
                 newFavorites.push(data[hour].spot_name);
                 database.ref('currentUser/').update({
@@ -280,7 +281,7 @@ popup and these will be saved to their profile if they have logged in. -->
                 console.log('added favorite:', newFavorites);
               }
 
-              //removing the favorite
+              //removes the favorite if it was in the user's favorites list
               else {
                 newFavorites = newFavorites.filter((keepBeach) => {
                   return keepBeach != data[hour].spot_name;
@@ -302,7 +303,7 @@ popup and these will be saved to their profile if they have logged in. -->
             beachData.appendChild(table);
 
 
-            /*Reviews*/
+            // display user-submitted reviews
             var html = '';
             async function displayReviews() {
               await new Promise(done => setTimeout(() => done(), 3000));
@@ -385,11 +386,11 @@ popup and these will be saved to their profile if they have logged in. -->
     });
     </script>
     <script>
-        //get google reviews
+        //get google reviews based on coordinates
         var coordinateMap, service;
 
         async function getGoogleReviews() {
-        //async function maps() {
+
           console.log('waiting..');
           await new Promise(done => setTimeout(() => done(), 1500));
 
@@ -400,6 +401,7 @@ popup and these will be saved to their profile if they have logged in. -->
             zoom: 15
           });
 
+          //search for Google locations categorized as beaches within 20 meters of given coordinates
           var request = {
             location: beach,
             radius: "20",
@@ -417,6 +419,7 @@ popup and these will be saved to their profile if they have logged in. -->
                 placeId: results[0].place_id
               };
 
+              //display the Google reviews and ratings if they exist for that location
               service.getDetails(newRequest, function(place, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                   $('.review-list').empty();
@@ -446,7 +449,7 @@ popup and these will be saved to their profile if they have logged in. -->
       <div class="top">
         <img src="../images/logo.png" id="logo">
         <div class="">
-          <h1 id="title"> Local Beaches </h1>
+          <h1 id="title"> San Diego Beaches </h1>
 
           <!--SEARCH BAR-->
           <div id="searchBar">
@@ -456,7 +459,7 @@ popup and these will be saved to their profile if they have logged in. -->
           <div id="welcomeHeader">
             <p id="welcome"> Welcome, </p>
             <p id="greeting"></p> <br>
-            <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
+            <a href="../index.html" id="logoutButton"> Log out </a>
           </div>
         </div>
       </div>
@@ -511,11 +514,12 @@ popup and these will be saved to their profile if they have logged in. -->
     <!--end of content-->
 
       <script>
-      // use api to get all beaches in California
+      // use api to get all beaches in San Diego
       var beachesAPI;
       $.ajax({
         //url: 'https://api.coastal.ca.gov/access/v1/locations',
-        url: 'http://api.spitcast.com/api/spot/all',
+        //url: 'http://api.spitcast.com/api/spot/all',
+        url: 'http://api.spitcast.com/api/county/spots/san-diego/',
         type: 'GET',
         async: false,
         success: (data) => {
@@ -523,6 +527,7 @@ popup and these will be saved to their profile if they have logged in. -->
           console.log('successfully got data');
         }
       })
+      //stores all beach names and coordinates from the API to use for the map
       var beaches = [];
       for (i = 0; i < beachesAPI.length; i++) {
         var beach = [];
@@ -532,19 +537,19 @@ popup and these will be saved to their profile if they have logged in. -->
         beaches.push(beach);
       }
 
-      //marks user's current location
+
       var map, infoWindow;
 
       function initMap() {
-        //default centers map at mavericks beach in half moon bay
+        //default centers map at la jolla shores
         map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 37.495799, lng: -122.496730},
-          zoom: 8,
+          center: {lat: 32.8569, lng: -117.2569},
+          zoom: 9,
           zoomControl: true
         });
         infoWindow = new google.maps.InfoWindow;
 
-        //marks user's geolocation
+        //marks user's geolocation on map and recenters the map around it
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
@@ -565,7 +570,7 @@ popup and these will be saved to their profile if they have logged in. -->
               handleLocationError(true, infoWindow, map.getCenter());
             });
         } else {
-            // Browser doesn't support Geolocation
+            //handles error if browser doesn't support geolocation
             handleLocationError(false, infoWindow, map.getCenter());
           }
 
@@ -593,11 +598,11 @@ popup and these will be saved to their profile if they have logged in. -->
             }) (marker, i));
           }
 
-          //adds marker clusters for beaches
+          //creates marker clusters for beaches
           var cluster = new MarkerClusterer(map, markersArray);
 
       }
-
+      // Handles error if browser doesn't support geolocation
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
@@ -606,7 +611,7 @@ popup and these will be saved to their profile if they have logged in. -->
         infoWindow.open(map);
       }
 
-      //beach map data
+      //pop-up content if user clicks on markers on the map instead of the beach name in the list
       function beachPopup() {
         const database = firebase.database();
         var newFavorites = [];
@@ -652,7 +657,7 @@ popup and these will be saved to their profile if they have logged in. -->
 
             const p1 = document.createElement('p');
             var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
-            td1_right.style.fontSize = "20px";
+            //td1_right.style.fontSize = "20px";
             p1.appendChild(shape);
 
             //meter display for current overall conditions
@@ -835,7 +840,7 @@ popup and these will be saved to their profile if they have logged in. -->
             beachData.appendChild(table);
 
 
-            /*Reviews*/
+            //displays user-submitted reviews and Google reviews for the beach
             var html = '';
             async function displayReviews() {
               await new Promise(done => setTimeout(() => done(), 3000));

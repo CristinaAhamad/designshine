@@ -91,4 +91,6 @@ img {
 }
 #logoutButton {
   align: right;
+  font-family: 'Montserrat';
+  font-style: normal;
 }

@@ -149,7 +149,7 @@ conditions, as well as remove the beach from their favorites.-->
 
               const p1 = document.createElement('p');
               var shape = document.createTextNode("Current conditions: " + data[hour].shape_full);
-              td1_right.style.fontSize = "20px";
+              //td1_right.style.fontSize = "20px";
               p1.appendChild(shape);
 
               //meter display for current overall conditions
@@ -288,7 +288,13 @@ conditions, as well as remove the beach from their favorites.-->
             favoriteButton.setAttribute('id', 'favButton');
             var clearStar;
 
-            console.log('contains ' + data[hour].spot_name + ': ' + newFavorites.includes(data[hour].spot_name));
+            var newFavorites;
+            database.ref('currentUser/').once('value', (snapshot) => {
+              const data = snapshot.val();
+              newFavorites = data.favorites;
+            });
+
+            //console.log('contains ' + data[hour].spot_name + ': ' + newFavorites.includes(data[hour].spot_name));
             //checks favorites list to determine which color star to display on load
             if (!newFavorites.includes(data[hour].spot_name)) {
               favoriteButton.src = "../images/star.png";
@@ -305,7 +311,7 @@ conditions, as well as remove the beach from their favorites.-->
                 newFavorites.push(data[hour].spot_name);
                 database.ref('currentUser/').update({
                   favorites: newFavorites
-                })
+                });
                 favoriteButton.src = "../images/yellowstar.png";
                 clearStar = false;
                 console.log('added favorite:', newFavorites);
@@ -315,10 +321,10 @@ conditions, as well as remove the beach from their favorites.-->
               else {
                 newFavorites = newFavorites.filter((keepBeach) => {
                   return keepBeach != data[hour].spot_name;
-                })
+                });
                 database.ref('currentUser/').update({
                   favorites: newFavorites
-                })
+                });
                 favoriteButton.src = "../images/star.png";
                 clearStar = true;
                 console.log('removed favorite:', newFavorites);
@@ -360,19 +366,19 @@ conditions, as well as remove the beach from their favorites.-->
                 else {
                   html += 'Be the first to review this beach!';
                 }
-<<<<<<< HEAD
+
                 $('#reviews').html(html);
               });
-=======
-              }
+
+
 
               //append all html elements
-              const beachData = document.getElementById('content');
+              /*const beachData = document.getElementById('content');
               h1.insertBefore(favoriteButton, name);
               beachData.appendChild(h1);
               beachData.appendChild(p1);
               beachData.appendChild(meter);
-              beachData.appendChild(table);
+              beachData.appendChild(table);*/
               //beachData.appendChild(p2);
               //beachData.appendChild(p3);
               //beachData.appendChild(p4);
@@ -380,14 +386,14 @@ conditions, as well as remove the beach from their favorites.-->
 
               setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
               //getCoordinates();
->>>>>>> e41f99432a474778f7a13a677fa97b1ce659d63d
-            }
+
+            } //end of displayReviews()
             displayReviews();
 
-            setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
-            getCoordinates();
-            getGoogleReviews();
-          }
+            //setCoordinates(data[0].spot_name, data[0].latitude, data[0].longitude);
+            //getCoordinates();
+            //getGoogleReviews();
+          } //end of request.onload
           request.send();
         });
 
@@ -409,7 +415,7 @@ conditions, as well as remove the beach from their favorites.-->
             }
           }); //end .linkButton.click
           /*end popup*/
-      }
+      }//end of print()
       print();
 
     </script>
@@ -426,7 +432,7 @@ conditions, as well as remove the beach from their favorites.-->
           <p id="welcome"> Welcome, </p>
           <p id="greeting"></p> <br>
           <!--Log out button-->
-          <button id="logoutButton"> <a href="../index.html"> Logout</a></button>
+          <a href="../index.html" id="logoutButton"> Log out </a>
         </div>
         <br>
         <!--Displays account details: username and email-->
@@ -434,9 +440,12 @@ conditions, as well as remove the beach from their favorites.-->
         <p id="name"></p>
         <p id="email"></p>
         <br>
+        <hr width=45%>
+        <br>
         <!--Displays user's favorited beaches-->
         <div class="favs">
-          <h2> Favorite Beaches </h2>
+          <h2> <img src="../images/yellowstar.png" id="stars">Favorite Beaches<img src="../images/yellowstar.png" id="stars"></h2>
+
           <div id="favorites"></div>
         </div>
       </div>
@@ -447,7 +456,7 @@ conditions, as well as remove the beach from their favorites.-->
           <span class="close">&times;</span>
           <div id="content"></div>
           <!--Reviews for current beach-->
-          <p> <a href="reviews.html" id="reviewLink"> See more reviews </a> </p>
+          <p> <a href="reviews.html" id="reviewLink"> See reviews </a> </p>
         </div>
     </div>
 

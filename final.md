@@ -8,8 +8,9 @@
 
 #### Jenna Ohira
   * Firebase for user accounts
-  * Store and update user favorites
-  * Display beaches on map and access Google reviews through Google Maps API
+  * Store and update user favorites across pages
+  * Display beaches on map with Google Maps API
+  * Access Google reviews through Google Places API
 
 #### Tina Ahamad
   * Gathered current data from Spitcast API
@@ -47,8 +48,13 @@ Styles the profiles page, displaying the username, email and the user’s favori
 #### reviews.css
 Styling and structure for the reviews page, first displaying an area for users to write their own review, then showing other user-submitted reviews, and finally displaying Google reviews.
 
-#### Server.js
+#### server.js
 Node.js + Express server backend for Tidekick. To start the server, run node server.js, and open the webpage at http://localhost:3000/
+
+#### script.js
+Connects to the spitcast API to get a list of beaches in San Diego County.It then displays the beach names in a list on the home page of Tidekick for the user to read and search through.
 
 ### Final Slide Link
 https://docs.google.com/presentation/d/1gbf40r-wSdtomNjCIKwE_kSt7p_Zmzy306VmIlV9WxA/edit?usp=sharing
+
+### Demo Video Link

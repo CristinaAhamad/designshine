@@ -109,7 +109,9 @@ body {
 }
 
 .linkButton:hover {
-  background-color: lightblue;
+  /*background-color: lightblue;*/
+  font-weight: bold;
+  color: #2172A2;
 }
 
 .mapButton:hover {
@@ -137,6 +139,8 @@ body {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  top: -75px;
+  padding-bottom: 90px;
 }
 
 .popup-content {
@@ -247,6 +251,8 @@ img {
 }
 #logoutButton {
   align: right;
+  font-family: 'Montserrat';
+  font-style: normal;
 }
 .table, td {
   margin-left: auto;
